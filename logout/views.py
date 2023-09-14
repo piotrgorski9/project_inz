@@ -7,5 +7,5 @@ def logoutaction(request):
     logout(request)
     
     # Teraz możesz przekierować użytkownika na inną stronę lub zrobić cokolwiek innego
-    return redirect('/start/')
+    return redirect('home')
 

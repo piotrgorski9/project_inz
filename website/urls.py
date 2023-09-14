@@ -20,8 +20,10 @@ from signup.views import signaction
 from login.views import loginaction
 from start.views import startaction
 from logout.views import logoutaction
+from django.views.generic import TemplateView
 
 urlpatterns = [
+    path('', TemplateView.as_view(template_name='start_page.html'), name='home'),
     path('admin/', admin.site.urls),
     path('signup/',signaction),
     path('login/',loginaction),
