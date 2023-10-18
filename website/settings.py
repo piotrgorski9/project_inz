@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'login',
     'start',
     'logout',
+    'user_panel',
 ]
 
 MIDDLEWARE = [

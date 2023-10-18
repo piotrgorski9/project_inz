@@ -20,6 +20,7 @@ from signup.views import signaction
 from login.views import loginaction
 from start.views import startaction
 from logout.views import logoutaction
+from user_panel.views import userpanelaction
 from django.views.generic import TemplateView
 
 urlpatterns = [
@@ -29,4 +30,5 @@ urlpatterns = [
     path('login/',loginaction),
     path('start/',startaction),
     path('logout/', logoutaction),
+    path('user_panel/', userpanelaction, name='user_panel'),
 ]

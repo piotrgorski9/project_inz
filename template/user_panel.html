@@ -1,11 +1,10 @@
 {% load static %}
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>Welcome Page</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -25,10 +24,10 @@
             margin-bottom: 20px;
         }
 
-        img {
-            max-width: 100%;
-            height: auto;
-            margin: 0;
+        img.avatar {
+            width: 10%;
+            border-radius: 50%;
+            margin-bottom: 20px;
         }
 
         button {
@@ -78,24 +77,14 @@
     </style>
 </head>
 <body>
-    <img src="{% static 'logo.png' %}" alt="Logo" width="200">
-
-    
-    <h1>Welcome to the Travel Analysis App</h1>
-
-    <button onclick="window.location.href='http://localhost:8000/login/'">Log In</button>
-    <button onclick="window.location.href='http://localhost:8000/signup/'">Sign Up</button>
+    <img src="{% static 'avatar_log.jpg' %}" alt="Avatar" class="avatar">
+    <h1>Welcome, {{ user_info.first_name }}!</h1>
     <button onclick="window.location.href='#'">Explore Analysis</button>
     <button onclick="window.location.href='https://www.youtube.com/'">Demo</button>
 
     <!-- Nowa sekcja -->
     <div>
-        <h2>Additional Information</h2>
-        <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-        </ul>
+        <button onclick="window.location.href='/logout/'">Logout</button>
     </div>
 </body>
 </html>
