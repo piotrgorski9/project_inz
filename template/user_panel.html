@@ -1,4 +1,7 @@
 {% load static %}
+{% for key, value in user.first_name.items %}
+    <p>{{ key }}: {{ value }}</p>
+{% endfor %}
 <!DOCTYPE html>
 <html lang="en">
 <head>

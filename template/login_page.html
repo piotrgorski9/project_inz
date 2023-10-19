@@ -109,5 +109,12 @@
         <p>Don't have an account? <a href="http://localhost:8000/signup/">Register</a></p>
         <p>Back to <a href="http://localhost:8000">Main Page</a></p>
     </form>
+
+    {% if error_message %}
+    <p style="color: red;">{{ error_message }}</p>
+    {% if email %}
+        <p>Invalid login attempt for email: {{ email }}</p>
+    {% endif %}
+{% endif %}
 </body>
 </html>
