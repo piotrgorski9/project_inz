@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'start',
     'logout',
     'user_panel',
+    'analysis',
 ]
 
 MIDDLEWARE = [

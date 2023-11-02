@@ -32,5 +32,5 @@ urlpatterns = [
     path('start/',startaction),
     path('logout/', logoutaction),
     path('user_panel/', userpanelaction, name='user_panel'),
-    path('analysis/', analysisaction),
+    path('analysis/', analysisaction, name='analysisaction'),
 ]

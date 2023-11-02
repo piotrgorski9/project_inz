@@ -1,18 +1,143 @@
+<!-- analysis.html -->
+
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Error page</title>
-        <style>
-            body{
-                color: red;
-                background-color: white;
-                font-size: 30px;
+
+<head>
+    <title>Strona Analizy</title>
+    <style>
+        body {
+            color: red;
+            background-color: white;
+            font-size: 30px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            margin: 20px auto;
+            display: none;
+            /* Ukryj tabelę na początku */
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .header {
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <h1>Analysis page!</h1>
+    </center>
+
+    <table id="country-table">
+        <thead>
+            <tr>
+                <th>Country</th>
+                <th>Capital</th>
+                <th>Emigration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for country in countries %}
+            <tr>
+                <td>{{ country.country }}</td>
+                <td>{{ country.capital }}</td>
+                <td>{{ country.emigration }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" onclick="toggleTable('country-table')">Show data</button>
+
+    <h2>Other Data</h2>
+    <table id="other-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Rok</th>
+                <th>Liczba Osób</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in other_data %}
+            <tr>
+                <td>{{ data.id }}</td>
+                <td>{{ data.rok }}</td>
+                <td>{{ data.liczba_osob }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <button type="button" onclick="toggleTable('other-table')">Show other data</button>
+
+    <!-- ... -->
+    <button onclick="calculateAverage()">Test średnia</button>
+    <p id="averageResult" style="display: none;">{{ average_emigration }}</p>
+    <!-- ... -->
+
+
+    <button onclick="calculatePercentage()">Oblicz procent</button>
+    <div id="percentageResult" class="hidden">
+        <h2>Procent emigrantów w każdym kraju:</h2>
+        <p id="percentageDetails"></p>
+    </div>
+
+    <script>
+        function toggleTable(tableId) {
+            var table = document.getElementById(tableId);
+            table.style.display = (table.style.display === 'none') ? 'table' : 'none';
+        }
+
+        function calculateAverage() {
+            var averageResult = document.getElementById('averageResult');
+            averageResult.style.display = (averageResult.style.display === 'none') ? 'block' : 'none';
+        }
+
+
+        function calculatePercentage() {
+            var countryTable = document.getElementById('country-table');
+            var rows = countryTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+            var totalEmigration = 0;
+            for (var i = 0; i < rows.length; i++) {
+                var emigrationCell = rows[i].getElementsByTagName('td')[2]; // Indeks 2 odpowiada kolumnie z emigracją
+                totalEmigration += parseInt(emigrationCell.innerText);
             }
-        </style>
-    </head>
-    <body>
-        <center><h1>Strona anlizy!</h1></center>
 
-        <button type="button" onclick="window.location.href='#'">strona główna</button>
+            var percentageDetails = document.getElementById('percentageDetails');
+            percentageDetails.innerHTML = "";
 
-    </body>
+            for (var i = 0; i < rows.length; i++) {
+                var countryCell = rows[i].getElementsByTagName('td')[0];
+                var emigrationCell = rows[i].getElementsByTagName('td')[2];
+                var percentage = (parseInt(emigrationCell.innerText) / totalEmigration) * 100;
+
+                percentageDetails.innerHTML += "<p>" + countryCell.innerText + ": " + percentage.toFixed(2) + "%</p>";
+            }
+
+            var percentageResult = document.getElementById('percentageResult');
+            percentageResult.style.display = 'block';
+        }
+    </script>
+</body>
+
 </html>
