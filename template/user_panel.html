@@ -1,7 +1,4 @@
 {% load static %}
-{% for key, value in user.first_name.items %}
-    <p>{{ key }}: {{ value }}</p>
-{% endfor %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,7 +79,7 @@
 <body>
     <img src="{% static 'avatar_log.jpg' %}" alt="Avatar" class="avatar">
     <h1>Welcome, {{ user_info.first_name }}!</h1>
-    <button onclick="window.location.href='#'">Explore Analysis</button>
+    <button onclick="window.location.href='http://localhost:8000/analysis/'">Explore Analysis</button>
     <button onclick="window.location.href='https://www.youtube.com/'">Demo</button>
 
     <!-- Nowa sekcja -->
