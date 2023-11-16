@@ -46,97 +46,268 @@
         <h1>Analysis page!</h1>
     </center>
 
+    <!-- Przycisk do pokazania/ukrycia danych krajów -->
+    <button type="button" onclick="toggleTable('country-table')">Show data</button>
+
+    <!-- Przycisk do pokazania/ukrycia danych o emigracjach -->
+    <button type="button" onclick="toggleTable('emigration-table')">Show emigrations</button>
+
+    <!-- Tabela z danymi krajów -->
     <table id="country-table">
         <thead>
             <tr>
+                <th>ID</th>
                 <th>Country</th>
                 <th>Capital</th>
-                <th>Emigration</th>
+                <th>Area</th>
+                <th>Population</th>
+                <th>Phone Code</th>
+                <th>Continent</th>
+                <th>Flag Path</th>
             </tr>
         </thead>
         <tbody>
             {% for country in countries %}
             <tr>
+                <td>{{ country.id }}</td>
                 <td>{{ country.country }}</td>
                 <td>{{ country.capital }}</td>
-                <td>{{ country.emigration }}</td>
+                <td>{{ country.area }}</td>
+                <td>{{ country.population }}</td>
+                <td>{{ country.phone_code }}</td>
+                <td>{{ country.continent }}</td>
+                <td>{{ country.flag_path }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <button type="button" onclick="toggleTable('country-table')">Show data</button>
-
-    <h2>Other Data</h2>
-    <table id="other-table">
+    <!-- Tabela z danymi o emigracjach -->
+    <table id="emigration-table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Rok</th>
-                <th>Liczba Osób</th>
+                <th>Country ID</th>
+                <th>Year</th>
+                <th>Number of Emigrants</th>
             </tr>
         </thead>
         <tbody>
-            {% for data in other_data %}
+            {% for emigration in emigrations %}
             <tr>
-                <td>{{ data.id }}</td>
-                <td>{{ data.rok }}</td>
-                <td>{{ data.liczba_osob }}</td>
+                <td>{{ emigration.id }}</td>
+                <td>{{ emigration.country_id }}</td>
+                <td>{{ emigration.year }}</td>
+                <td>{{ emigration.number_of_emigrants }}</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <button type="button" onclick="toggleTable('other-table')">Show other data</button>
+    <!-- Formularz do obliczania średniej i minimalnej emigracji dla wybranego roku -->
+    <form id="analysis-form">
+        <label for="selected-year">Select year:</label>
+        <select id="selected-year" name="selected-year">
+            {% for year in unique_years %}
+            <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+        <!-- Przycisk do pokazania średniej emigracji dla wybranego roku -->
+        <button type="button" onclick="calculateAverageForSelectedYear()">Calculate average emigration</button>
+        <!-- Przycisk do pokazania minimalnej emigracji dla wybranego roku -->
+        <button type="button" onclick="calculateMinForSelectedYear()">Calculate minimum emigration</button>
+        <!-- Przycisk do pokazania maksymalnej emigracji dla wybranego roku -->
+        <button type="button" onclick="calculateMaxEmigrationForYear()">Show maximum emigration for selected year</button>
+        <!-- Przycisk do pokazania odchylenia standardowego emigracji dla wybranego roku -->
+        <button type="button" onclick="calculateStandardDeviationForSelectedYear()">Calculate standard deviation of emigration</button>
+    </form>
 
-    <!-- ... -->
-    <button onclick="calculateAverage()">Test średnia</button>
-    <p id="averageResult" style="display: none;">{{ average_emigration }}</p>
-    <!-- ... -->
+    <!-- Formularz do obliczania procentu dla wybranego kraju i roku -->
+    <form id="country-year-form">
+        <label for="selected-country">Select country:</label>
+        <select id="selected-country" name="selected-country">
+            {% for country in countries %}
+            <option value="{{ country.country }}">{{ country.country }}</option>
+            {% endfor %}
+        </select>
+        <!-- Przycisk do pokazania procentu emigrantów dla wybranego kraju -->
+        <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Calculate percentage for selected country and year</button>
+    </form>
 
+    <!-- Ukrywanie wyników -->
+    <button type="button" onclick="hideAllResults()">Hide results</button>
 
-    <button onclick="calculatePercentage()">Oblicz procent</button>
-    <div id="percentageResult" class="hidden">
-        <h2>Procent emigrantów w każdym kraju:</h2>
-        <p id="percentageDetails"></p>
+    <!-- Wyświetlenie wszystkich wyników -->
+
+    <!-- Wyświetlenie wyniku obliczonej średniej -->
+    <p id="averageResult" style="display: none;"></p>
+
+    <!-- Wyświetlenie wyniku minimalnej emigracji dla wybranego roku -->
+    <p id="minResult" style="display: none;"></p>
+
+    <!-- Wyświetlenie wyniku maksymalnej emigracji dla wybranego roku -->
+    <p id="maxEmigrationResult" style="display: none;"></p>
+
+    <!-- Wyświetlenie wyniku odchylenia standardowego dla emigrantów w wybranym roku -->
+    <p id="standardDeviationResult" style="display: none;"></p>
+
+    <!-- Wyświetlenie wyniku obliczonego procentu dla wybranego kraju i roku -->
+    <div id="country-year-percentage-result" class="hidden">
+        <p>Percentage of emigrants for selected country and year: </p>
+        <p id="country-year-percentage-details"></p>
     </div>
 
+    <p>Back to user panel</p>
+    <button type="button" onclick="goBack()">Go back</button>
+
+    
+
     <script>
+        // Wyswietlanie tabel
         function toggleTable(tableId) {
             var table = document.getElementById(tableId);
             table.style.display = (table.style.display === 'none') ? 'table' : 'none';
         }
 
-        function calculateAverage() {
+        // Obliczanie sredniej dla wybranego roku
+        function calculateAverageForSelectedYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć średnią dla wybranego roku
+            fetch('/calculate_average_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('average_emigration' in data) {
+                        var averageResult = document.getElementById('averageResult');
+                        averageResult.innerHTML = "Average emigration for year " + selectedYear + ": " + data.average_emigration.toFixed(2);
+                        averageResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Obliczanie procentu dla wybranego kraju
+        function calculatePercentageForSelectedCountryAndYear() {
+            var selectedCountry = document.getElementById('selected-country').value;
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć procent dla wybranego kraju i roku
+            fetch('/calculate_percentage_for_country_and_year/?selected_country=' + encodeURIComponent(selectedCountry) + '&selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('percentage' in data) {
+                        var countryYearPercentageDetails = document.getElementById('country-year-percentage-details');
+                        countryYearPercentageDetails.innerHTML = "<p>" + selectedCountry + " in year " + selectedYear + ": " + data.percentage.toFixed(2) + "%</p>";
+
+                        var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
+                        countryYearPercentageResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Max wartośc dla wybranego roku
+        function calculateMaxEmigrationForYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć maksymalną emigrację dla wybranego roku
+            fetch('/calculate_max_emigration_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('max_emigration' in data && 'max_country' in data) {
+                        var maxEmigrationResult = document.getElementById('maxEmigrationResult');
+                        maxEmigrationResult.innerHTML = "Maximum emigration for year " + selectedYear + ": " + data.max_emigration +
+                            " in country " + data.max_country;
+                        maxEmigrationResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Min wartośc dla wybranego roku
+        function calculateMinForSelectedYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć minimalną wartość dla wybranego roku
+            fetch('/calculate_min_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('min_emigration' in data && 'country_with_min_emigration' in data) {
+                        var minResult = document.getElementById('minResult');
+
+                        minResult.innerHTML = "Minimum emigration for year " + selectedYear + ": " + data.min_emigration +
+                            " in country " + data.country_with_min_emigration;
+                        minResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Odchylenie standardowe dla wybranego roku
+        function calculateStandardDeviationForSelectedYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć odchylenie standardowe dla wybranego roku
+            fetch('/calculate_standard_deviation_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('standard_deviation' in data) {
+                        var standardDeviationResult = document.getElementById('standardDeviationResult');
+                        standardDeviationResult.innerHTML = "Standard deviation for year " + selectedYear + ": " + data.standard_deviation.toFixed(2);
+                        standardDeviationResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // powrót do panelu użytkownika
+        function goBack() {
+            window.history.back();
+        }
+
+        // Funkcja do ukrywania wszystkich wyników
+        function hideAllResults() {
+            // Ukryj wyniki średniej emigracji
             var averageResult = document.getElementById('averageResult');
-            averageResult.style.display = (averageResult.style.display === 'none') ? 'block' : 'none';
+            averageResult.style.display = 'none';
+
+            // Ukryj wyniki minimalnej emigracji
+            var minResult = document.getElementById('minResult');
+            minResult.style.display = 'none';
+
+            // Ukryj wyniki maksymalnej emigracji
+            var maxEmigrationResult = document.getElementById('maxEmigrationResult');
+            maxEmigrationResult.style.display = 'none';
+
+            // Ukryj wyniki odchylenia standardowego
+            var standardDeviationResult = document.getElementById('standardDeviationResult');
+            standardDeviationResult.style.display = 'none';
+
+            // Ukryj wyniki procentu dla wybranego kraju i roku
+            var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
+            countryYearPercentageResult.style.display = 'none';
         }
 
-
-        function calculatePercentage() {
-            var countryTable = document.getElementById('country-table');
-            var rows = countryTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-            var totalEmigration = 0;
-            for (var i = 0; i < rows.length; i++) {
-                var emigrationCell = rows[i].getElementsByTagName('td')[2]; // Indeks 2 odpowiada kolumnie z emigracją
-                totalEmigration += parseInt(emigrationCell.innerText);
-            }
-
-            var percentageDetails = document.getElementById('percentageDetails');
-            percentageDetails.innerHTML = "";
-
-            for (var i = 0; i < rows.length; i++) {
-                var countryCell = rows[i].getElementsByTagName('td')[0];
-                var emigrationCell = rows[i].getElementsByTagName('td')[2];
-                var percentage = (parseInt(emigrationCell.innerText) / totalEmigration) * 100;
-
-                percentageDetails.innerHTML += "<p>" + countryCell.innerText + ": " + percentage.toFixed(2) + "%</p>";
-            }
-
-            var percentageResult = document.getElementById('percentageResult');
-            percentageResult.style.display = 'block';
-        }
     </script>
 </body>
 
