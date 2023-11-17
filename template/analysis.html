@@ -39,6 +39,10 @@
             display: none;
         }
     </style>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 </head>
 
 <body>
@@ -117,9 +121,11 @@
         <!-- Przycisk do pokazania minimalnej emigracji dla wybranego roku -->
         <button type="button" onclick="calculateMinForSelectedYear()">Calculate minimum emigration</button>
         <!-- Przycisk do pokazania maksymalnej emigracji dla wybranego roku -->
-        <button type="button" onclick="calculateMaxEmigrationForYear()">Show maximum emigration for selected year</button>
+        <button type="button" onclick="calculateMaxEmigrationForYear()">Show maximum emigration for selected
+            year</button>
         <!-- Przycisk do pokazania odchylenia standardowego emigracji dla wybranego roku -->
-        <button type="button" onclick="calculateStandardDeviationForSelectedYear()">Calculate standard deviation of emigration</button>
+        <button type="button" onclick="calculateStandardDeviationForSelectedYear()">Calculate standard deviation of
+            emigration</button>
     </form>
 
     <!-- Formularz do obliczania procentu dla wybranego kraju i roku -->
@@ -131,7 +137,8 @@
             {% endfor %}
         </select>
         <!-- Przycisk do pokazania procentu emigrantów dla wybranego kraju -->
-        <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Calculate percentage for selected country and year</button>
+        <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Calculate percentage for selected
+            country and year</button>
     </form>
 
     <!-- Ukrywanie wyników -->
@@ -160,7 +167,33 @@
     <p>Back to user panel</p>
     <button type="button" onclick="goBack()">Go back</button>
 
-    
+
+    <h1>NOWE</h1>
+
+    <!-- Przycisk do pokazania wykresu kołowego -->
+    <button type="button" onclick="showPieChart()">Show Pie Chart</button>
+
+    <!-- Kontener dla wykresu kołowego -->
+    <div id="pieChartContainer"></div>
+
+
+    <!-- Przycisk do pokazania formularza wyboru kraju i lat -->
+    <button type="button" onclick="showEmigrationForm()">Show Emigration Chart</button>
+
+    <!-- Formularz do wyboru kraju i lat -->
+    <form id="emigration-form" style="display: none;">
+
+        <!-- Kontener dla wykresu -->
+        <div id="emigrationChartContainer">
+            <img id="emigrationChart" src="" alt="Emigration Chart">
+        </div>
+
+
+        <label for="yearRange">Select start and end year:</label>
+        <div id="yearRange"></div>
+        <span id="selectedStartYear">2005</span>
+        <span id="selectedEndYear">2022</span>
+    </form>
 
     <script>
         // Wyswietlanie tabel
@@ -307,6 +340,97 @@
             var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
             countryYearPercentageResult.style.display = 'none';
         }
+
+        //WYKES
+
+        // Funkcja do pokazania wykresu kołowego
+        function showPieChart() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby pobrać dane dla wykresu
+            fetch('/generate_pie_chart/' + encodeURIComponent(selectedYear) + '/')
+                .then(response => response.json())
+                .then(data => {
+                    if ('image_base64' in data) {
+                        var pieChartContainer = document.getElementById('pieChartContainer');
+                        pieChartContainer.innerHTML = '<img src="data:image/png;base64,' + data.image_base64 + '" alt="Pie Chart">';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Funkcja do pokazania formularza wyboru kraju i lat
+        function showEmigrationForm() {
+            var emigrationForm = document.getElementById('emigration-form');
+            emigrationForm.style.display = 'block';
+        }
+
+        // Funkcja do ukrywania formularza
+        function hideEmigrationForm() {
+            var emigrationForm = document.getElementById('emigration-form');
+            emigrationForm.style.display = 'none';
+        }
+
+        // Funkcja do pokazania wykresu emigracji
+        function showEmigrationChart() {
+            var selectedCountry = document.getElementById('selected-country').value;
+
+            // Pobierz wartości początkową i końcową z suwaka
+            var startYear = $("#yearRange").slider("values", 0);
+            var endYear = $("#yearRange").slider("values", 1);
+
+            // Wywołaj funkcję do pobrania i wyświetlenia wykresu
+            fetch('/generate_emigration_chart/' + encodeURIComponent(selectedCountry) + '/?start_year=' + encodeURIComponent(startYear) + '&end_year=' + encodeURIComponent(endYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('image_base64' in data) {
+                        var emigrationChart = document.getElementById('emigrationChart');
+                        emigrationChart.src = 'data:image/png;base64,' + data.image_base64;
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Funkcja do obsługi suwaka z dwoma uchwytami
+        function handleYearRangeChange() {
+            var yearRange = $("#yearRange");
+            var selectedStartYear = $("#selectedStartYear");
+            var selectedEndYear = $("#selectedEndYear");
+
+            // Pobierz wartości początkową i końcową z suwaka
+            var startYear = yearRange.slider("values", 0);
+            var endYear = yearRange.slider("values", 1);
+
+            selectedStartYear.text(startYear);
+            selectedEndYear.text(endYear);
+
+            // Wywołaj funkcję do pobrania i wyświetlenia wykresu
+            showEmigrationChart();
+        }
+
+        // Inicjalizacja suwaka z dwoma uchwytami
+        $("#yearRange").slider({
+            range: true,
+            min: 2005,
+            max: 2022,
+            values: [2005, 2022],
+            slide: function (event, ui) {
+                $("#selectedStartYear").text(ui.values[0]);
+                $("#selectedEndYear").text(ui.values[1]);
+            },
+            stop: function (event, ui) {
+                // Wywołaj funkcję do pobrania i wyświetlenia wykresu po zakończeniu przesuwania suwaka
+                showEmigrationChart();
+            }
+        });
 
     </script>
 </body>
