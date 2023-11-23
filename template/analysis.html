@@ -124,8 +124,10 @@
         <button type="button" onclick="calculateMaxEmigrationForYear()">Show maximum emigration for selected
             year</button>
         <!-- Przycisk do pokazania odchylenia standardowego emigracji dla wybranego roku -->
-        <button type="button" onclick="calculateStandardDeviationForSelectedYear()">Calculate standard deviation of
-            emigration</button>
+        <!-- <button type="button" onclick="calculateStandardDeviationForSelectedYear()">Calculate standard deviation of
+            emigration</button> -->
+        <button type="button" onclick="calculateSum()">Oblicz sumę emigrantów</button>
+
     </form>
 
     <!-- Formularz do obliczania procentu dla wybranego kraju i roku -->
@@ -139,6 +141,35 @@
         <!-- Przycisk do pokazania procentu emigrantów dla wybranego kraju -->
         <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Calculate percentage for selected
             country and year</button>
+    </form>
+
+    <!-- Nowy formularz do obliczania odchylenia standardowego dla danego kraju i zakresu lat -->
+    <form id="standard-deviation-form">
+        <label for="selected-country-deviation">Select country:</label>
+        <select id="selected-country-deviation" name="selected-country-deviation">
+            {% for country in countries %}
+            <option value="{{ country.country }}">{{ country.country }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Dodaj pola do wyboru zakresu lat -->
+        <label for="start-year">Start year:</label>
+        <select id="start-year" name="start-year">
+            {% for year in unique_years %}
+            <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="end-year">End year:</label>
+        <select id="end-year" name="end-year">
+            {% for year in unique_years %}
+            <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+
+        <!-- Przycisk do obliczania odchylenia standardowego dla danego kraju -->
+        <button type="button" onclick="calculateStandardDeviationForSelectedCountry()">Calculate standard deviation for
+            selected country</button>
     </form>
 
     <!-- Ukrywanie wyników -->
@@ -158,6 +189,9 @@
     <!-- Wyświetlenie wyniku odchylenia standardowego dla emigrantów w wybranym roku -->
     <p id="standardDeviationResult" style="display: none;"></p>
 
+    <!-- Wyświetlanie sumy emigrantów -->
+    <div id="sumResult"></div>
+
     <!-- Wyświetlenie wyniku obliczonego procentu dla wybranego kraju i roku -->
     <div id="country-year-percentage-result" class="hidden">
         <p>Percentage of emigrants for selected country and year: </p>
@@ -167,18 +201,16 @@
     <p>Back to user panel</p>
     <button type="button" onclick="goBack()">Go back</button>
 
-
-    <h1>NOWE</h1>
-
     <!-- Przycisk do pokazania wykresu kołowego -->
     <button type="button" onclick="showPieChart()">Show Pie Chart</button>
 
+    <!-- Przycisk do pokazania wykresu emigracji -->
+    <button type="button" onclick="showEmigrationChart()">Show Emigration Chart</button>
+    
+    <button id="hidePieChartButton" onclick="hidePieChart()">Hide Charts</button>
+
     <!-- Kontener dla wykresu kołowego -->
     <div id="pieChartContainer"></div>
-
-
-    <!-- Przycisk do pokazania formularza wyboru kraju i lat -->
-    <button type="button" onclick="showEmigrationForm()">Show Emigration Chart</button>
 
     <!-- Formularz do wyboru kraju i lat -->
     <form id="emigration-form" style="display: none;">
@@ -193,7 +225,73 @@
         <div id="yearRange"></div>
         <span id="selectedStartYear">2005</span>
         <span id="selectedEndYear">2022</span>
+
+        <form id="two-countries-form">
+            <label for="selected-country-1">Select Country 1:</label>
+            <select id="selected-country-1" name="selected-country-1">
+                {% for country in countries %}
+                <option value="{{ country.country }}">{{ country.country }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="selected-country-2">Select Country 2:</label>
+            <select id="selected-country-2" name="selected-country-2">
+                {% for country in countries %}
+                <option value="{{ country.country }}">{{ country.country }}</option>
+                {% endfor %}
+            </select>
+
+            <!-- Przycisk do pokazania wykresu dla dwóch krajów -->
+            <button type="button" onclick="showEmigrationChartForTwoCountries()">Show Emigration Chart for Two
+                Countries</button>
+        </form>
     </form>
+
+    <!-- Przycisk do pokazania formularza wyboru kraju i lat -->
+    <!-- <button type="button" onclick="showEmigrationForm()">Show Emigration Chart</button> -->
+
+
+
+    <h1>NOWE</h1>
+
+    
+
+
+
+    <!-- Nowy formularz do wyboru dwóch krajów -->
+    <!-- <form id="two-countries-form">
+        <label for="selected-country-1">Select Country 1:</label>
+        <select id="selected-country-1" name="selected-country-1">
+            {% for country in countries %}
+            <option value="{{ country.country }}">{{ country.country }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="selected-country-2">Select Country 2:</label>
+        <select id="selected-country-2" name="selected-country-2">
+            {% for country in countries %}
+            <option value="{{ country.country }}">{{ country.country }}</option>
+            {% endfor %}
+        </select>
+
+         Przycisk do pokazania wykresu dla dwóch krajów
+        <button type="button" onclick="showEmigrationChartForTwoCountries()">Show Emigration Chart for Two
+            Countries</button>
+    </form>  -->
+
+    <!-- Obliczanie sumy -->
+    <!-- Przyciski i formularz dla sumy emigrantów -->
+    <!-- <form id="sumForm">
+        <label for="selectedYear">Wybierz rok:</label>
+        <select id="selectedYear" name="selectedYear">
+            {% for year in unique_years %}
+            <option value="{{ year.year }}">{{ year.year }}</option>
+            {% endfor %}
+        </select>
+         <button type="button" onclick="calculateSum()">Oblicz sumę emigrantów</button>
+    </form>  -->
+
+
 
     <script>
         // Wyswietlanie tabel
@@ -293,16 +391,39 @@
         }
 
         // Odchylenie standardowe dla wybranego roku
-        function calculateStandardDeviationForSelectedYear() {
-            var selectedYear = document.getElementById('selected-year').value;
+        // function calculateStandardDeviationForSelectedYear() {
+        //     var selectedYear = document.getElementById('selected-year').value;
 
-            // Wywołaj żądanie AJAX do Django, aby obliczyć odchylenie standardowe dla wybranego roku
-            fetch('/calculate_standard_deviation_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+        //     // Wywołaj żądanie AJAX do Django, aby obliczyć odchylenie standardowe dla wybranego roku
+        //     fetch('/calculate_standard_deviation_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             if ('standard_deviation' in data) {
+        //                 var standardDeviationResult = document.getElementById('standardDeviationResult');
+        //                 standardDeviationResult.innerHTML = "Standard deviation for year " + selectedYear + ": " + data.standard_deviation.toFixed(2);
+        //                 standardDeviationResult.style.display = 'block';
+        //             } else {
+        //                 alert('An error occurred: ' + data.error);
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('Error during AJAX request:', error);
+        //         });
+        // }
+
+        // odchylenie dla wybranego kraju 
+        function calculateStandardDeviationForSelectedCountry() {
+            var selectedCountry = document.getElementById('selected-country-deviation').value;
+            var startYear = document.getElementById('start-year').value;
+            var endYear = document.getElementById('end-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć odchylenie standardowe dla danego kraju i zakresu lat
+            fetch('/calculate_standard_deviation_for_country/?selected_country=' + encodeURIComponent(selectedCountry) + '&start_year=' + encodeURIComponent(startYear) + '&end_year=' + encodeURIComponent(endYear))
                 .then(response => response.json())
                 .then(data => {
                     if ('standard_deviation' in data) {
                         var standardDeviationResult = document.getElementById('standardDeviationResult');
-                        standardDeviationResult.innerHTML = "Standard deviation for year " + selectedYear + ": " + data.standard_deviation.toFixed(2);
+                        standardDeviationResult.innerHTML = "Standard deviation for " + selectedCountry + " from " + startYear + " to " + endYear + ": " + data.standard_deviation.toFixed(2);
                         standardDeviationResult.style.display = 'block';
                     } else {
                         alert('An error occurred: ' + data.error);
@@ -312,6 +433,29 @@
                     console.error('Error during AJAX request:', error);
                 });
         }
+
+        function calculateSum() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Ukryj wyniki sumy emigrantów przed wysłaniem zapytania AJAX
+            var sumResult = document.getElementById('sumResult');
+            sumResult.style.display = 'none';
+            sumResult.innerText = '';  // Zresetuj tekst wyniku
+
+            // Wywołaj funkcję na backendzie i obsłuż odpowiedź
+            $.get('/calculate_sum_for_year/', { selected_year: selectedYear }, function (data) {
+                if ('total_emigration_for_year' in data) {
+                    $('#sumResult').text('Suma emigrantów dla ' + selectedYear + ': ' + data.total_emigration_for_year);
+                    // Pokaż wyniki sumy emigrantów po otrzymaniu odpowiedzi
+                    sumResult.style.display = 'block';
+                } else {
+                    $('#sumResult').text('Błąd: ' + data.error);
+                }
+            });
+        }
+
+
+
 
         // powrót do panelu użytkownika
         function goBack() {
@@ -336,6 +480,10 @@
             var standardDeviationResult = document.getElementById('standardDeviationResult');
             standardDeviationResult.style.display = 'none';
 
+            // Ukryj wyniki sumy emigrantów
+            var sumResult = document.getElementById('sumResult');
+            sumResult.style.display = 'none';
+
             // Ukryj wyniki procentu dla wybranego kraju i roku
             var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
             countryYearPercentageResult.style.display = 'none';
@@ -345,6 +493,14 @@
 
         // Funkcja do pokazania wykresu kołowego
         function showPieChart() {
+
+            var pieChartContainer = document.getElementById('pieChartContainer');
+
+            // Sprawdź, czy kontener ma klasę ukrywającą
+            if (pieChartContainer.classList.contains('hidden')) {
+                // Jeśli tak, usuń ją, aby wykres mógł być widoczny
+                pieChartContainer.classList.remove('hidden');
+            }
             var selectedYear = document.getElementById('selected-year').value;
 
             // Wywołaj żądanie AJAX do Django, aby pobrać dane dla wykresu
@@ -363,20 +519,22 @@
                 });
         }
 
-        // Funkcja do pokazania formularza wyboru kraju i lat
-        function showEmigrationForm() {
-            var emigrationForm = document.getElementById('emigration-form');
-            emigrationForm.style.display = 'block';
-        }
+        // // Funkcja do pokazania formularza wyboru kraju i lat
+        // function showEmigrationForm() {
+        //     var emigrationForm = document.getElementById('emigration-form');
+        //     emigrationForm.style.display = 'block';
+        // }
 
-        // Funkcja do ukrywania formularza
-        function hideEmigrationForm() {
-            var emigrationForm = document.getElementById('emigration-form');
-            emigrationForm.style.display = 'none';
-        }
+        // // Funkcja do ukrywania formularza
+        // function hideEmigrationForm() {
+        //     var emigrationForm = document.getElementById('emigration-form');
+        //     emigrationForm.style.display = 'none';
+        // }
 
         // Funkcja do pokazania wykresu emigracji
         function showEmigrationChart() {
+            var emigrationForm = document.getElementById('emigration-form');
+            emigrationForm.style.display = 'block';
             var selectedCountry = document.getElementById('selected-country').value;
 
             // Pobierz wartości początkową i końcową z suwaka
@@ -426,11 +584,67 @@
                 $("#selectedStartYear").text(ui.values[0]);
                 $("#selectedEndYear").text(ui.values[1]);
             },
-            stop: function (event, ui) {
-                // Wywołaj funkcję do pobrania i wyświetlenia wykresu po zakończeniu przesuwania suwaka
-                showEmigrationChart();
-            }
+            // stop: function (event, ui) {
+            //     // Sprawdź, czy został naciśnięty przycisk
+            //     if (event.originalEvent.type === 'mouseup') {
+            //         // Wywołaj funkcję do pobrania i wyświetlenia wykresu po zakończeniu przesuwania suwaka
+            //         showEmigrationChart();
+            //     }
+            // }
         });
+
+
+        // nowy wykres do porównywania 
+
+        // Zmienne do przechowywania wybranych krajów
+        var selectedCountry1 = "";
+        var selectedCountry2 = "";
+
+        // Funkcja do obsługi zmiany wybranego kraju 1
+        function handleCountry1Change() {
+            selectedCountry1 = document.getElementById('selected-country-1').value;
+        }
+
+        // Funkcja do obsługi zmiany wybranego kraju 2
+        function handleCountry2Change() {
+            selectedCountry2 = document.getElementById('selected-country-2').value;
+        }
+
+        // Funkcja do obsługi formularza i generowania wykresu dla dwóch krajów
+        function showEmigrationChartForTwoCountries() {
+            // Pobierz wartości początkową i końcową z suwaka
+            var startYear = $("#yearRange").slider("values", 0);
+            var endYear = $("#yearRange").slider("values", 1);
+
+            // Pobierz wybrane kraje z formularza
+            var selectedCountry1 = document.getElementById('selected-country-1').value;
+            var selectedCountry2 = document.getElementById('selected-country-2').value;
+
+            // Wywołaj funkcję do pobrania i wyświetlenia wykresu dla dwóch krajów
+            fetch('/generate_emigration_chart_for_two_countries/?country1=' + encodeURIComponent(selectedCountry1) + '&country2=' + encodeURIComponent(selectedCountry2) + '&start_year=' + encodeURIComponent(startYear) + '&end_year=' + encodeURIComponent(endYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('image_base64' in data) {
+                        var emigrationChart = document.getElementById('emigrationChart');
+                        emigrationChart.src = 'data:image/png;base64,' + data.image_base64;
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        function hidePieChart() {
+            var pieChartContainer = document.getElementById('pieChartContainer');
+            pieChartContainer.classList.add('hidden');  // Dodaj klasę ukrywającą
+
+            var emigrationForm = document.getElementById('emigration-form');
+            emigrationForm.style.display = 'none';
+        }
+
+
 
     </script>
 </body>
