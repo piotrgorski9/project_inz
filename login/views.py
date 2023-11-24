@@ -1,37 +1,61 @@
-from django.shortcuts import render
-import mysql.connector as sql
-import bcrypt
+from django.contrib.auth.hashers import check_password
+from django.shortcuts import render, redirect
+from signup.models import UserProfile
 
 def loginaction(request):
-    cursor = None
+    em = None
 
     try:
         if request.method == "POST":
             em = request.POST.get("email")
             pwd = request.POST.get("password")
 
-            with sql.connect(host="localhost", user="root", passwd="bazahaslo", database='website') as m:
-                cursor = m.cursor()
-                c = "select password from users where email=%s"
-                cursor.execute(c, (em,))
-                hashed_password = cursor.fetchone()
+            # Pobierz obiekt użytkownika z bazy danych
+            user_profile = UserProfile.objects.get(email=em)
+            stored_password = user_profile.password
 
-                if hashed_password and bcrypt.checkpw(pwd.encode('utf-8'), hashed_password[0].encode('utf-8')):
-                    # Pobierz rzeczywiste dane użytkownika z bazy danych
-                    cursor.execute("SELECT first_name FROM users WHERE email = %s", (em,))
-                    user_info = cursor.fetchone()
+            if stored_password is not None:
+                # Sprawdź poprawność hasła za pomocą check_password
+                if check_password(pwd, stored_password):
+                    # Sprawdź typ użytkownika
+                    user_type = user_profile.user_type
 
-                    # Przekazujesz rzeczywiste dane użytkownika do szablonu
-                    return render(request, 'user_panel.html', {'user_info': {'first_name': user_info[0]}})
+                    # W zależności od typu użytkownika przekieruj na odpowiednią stronę
+                    if user_type == 'admin':
+
+                        user_info = {
+                            'first_name': user_profile.first_name,
+                            'last_name': user_profile.last_name,
+                            # Dodaj inne pola profilu, które chcesz przekazać do szablonu
+                        }
+
+                        return render(request, 'admin_page.html', {'user_info': user_info})
+                    elif user_type == 'normal':
+                        # Pobierz rzeczywiste dane użytkownika z bazy danych
+                        user_info = {
+                            'first_name': user_profile.first_name,
+                            'last_name': user_profile.last_name,
+                            # Dodaj inne pola profilu, które chcesz przekazać do szablonu
+                        }
+
+                        # Przekazujesz rzeczywiste dane użytkownika do szablonu
+                        return render(request, 'user_panel.html', {'user_info': user_info})
+                    else:
+                        return render(request, 'error.html')  # Obsługa innych typów użytkowników
+
                 else:
-                    error_message = 'Invalid email or password.'
+                    error_message = 'Nieprawidłowy adres email lub hasło.'
                     return render(request, 'login_page.html', {'error_message': error_message, 'email': em})
+            else:
+                error_message = 'Brak hasła dla użytkownika.'
+                return render(request, 'login_page.html', {'error_message': error_message, 'email': em})
+        else:
+            # Obsługa przypadku, gdy żądanie nie jest typu POST
+            return render(request, 'login_page.html')
 
-        return render(request, 'login_page.html')
-
-    except sql.Error as e:
-        print(f"Błąd połączenia z bazą danych: {e}")
+    except UserProfile.DoesNotExist:
+        error_message = 'Nieprawidłowy adres email lub hasło.'
+        return render(request, 'login_page.html', {'error_message': error_message, 'email': em})
+    except Exception as e:
+        print(f"Wystąpił błąd: {e}")
         return render(request, 'error.html')
-    finally:
-        if cursor:
-            cursor.close()

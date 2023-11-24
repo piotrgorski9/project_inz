@@ -1,6 +1,6 @@
+from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
-import mysql.connector as sql
-import bcrypt
+from .models import UserProfile
 
 def signaction(request):
     if request.method == "POST":
@@ -14,27 +14,27 @@ def signaction(request):
             # Komunikat o błędzie, jeśli nie wszystkie pola są wypełnione
             return render(request, 'signup_page.html', {'error_message': 'Wszystkie pola formularza są wymagane.'})
 
-        hashed_password = hash_password(pwd)
-
         try:
-            with sql.connect(host="localhost", user="root", passwd="bazahaslo", database='website') as m:
-                cursor = m.cursor()
-                c = "INSERT INTO users (email, password, First_Name, Last_Name, Sex) VALUES (%s, %s, %s, %s, %s)"
-                cursor.execute(c, (em, hashed_password, first_name, last_name, sex))
-                m.commit()
+            # Użyj make_password do haszowania hasła przed zapisaniem
+            hashed_pwd = make_password(pwd)
+            
+            # Utworzenie obiektu UserProfile
+            user_profile = UserProfile(
+                email=em,
+                password=hashed_pwd,
+                first_name=first_name,
+                last_name=last_name,
+                sex=sex
+            )
+            # Zapisanie obiektu w bazie danych
+            user_profile.save()
 
-                # Przekazanie komunikatu o sukcesie do szablonu
-                return render(request, 'signup_page.html', {'success_message': 'Registration successful!'})
+            # Przekazanie komunikatu o sukcesie do szablonu
+            return render(request, 'signup_page.html', {'success_message': 'Registration successful!'})
 
-        except sql.Error as e:
-            print(f"Błąd połączenia z bazą danych: {e}")
+        except Exception as e:
+            print(f"Błąd podczas rejestracji: {e}")
             # Przekazanie komunikatu o błędzie do szablonu
             return render(request, 'signup_page.html', {'error_message': 'Wystąpił błąd podczas rejestracji. Spróbuj ponownie później.'})
 
     return render(request, 'signup_page.html')
-
-# Funkcja do haszowania hasła
-def hash_password(password):
-    salt = bcrypt.gensalt()
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_password
