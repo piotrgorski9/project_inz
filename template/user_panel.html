@@ -1,90 +1,26 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
+    <title>Strona powitalna</title>
 
-        h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        img.avatar {
-            width: 10%;
-            border-radius: 50%;
-            margin-bottom: 20px;
-        }
-
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        div {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        h2 {
-            color: #333;
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px;
-            font-size: 1.2em;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0066cc;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/user_style.css' %}">
 </head>
+
 <body>
     <img src="{% static 'avatar_log.jpg' %}" alt="Avatar" class="avatar">
-    <h1>Welcome, {{ user_info.first_name }}!</h1>
-    <button onclick="window.location.href='http://localhost:8000/analysis/'">Explore Analysis</button>
-    <button onclick="window.location.href='https://www.youtube.com/'">Demo</button>
-
+    <h1 class="welcome-message">Witaj, {{ user_info.first_name }}!</h1>
     <!-- Nowa sekcja -->
-    <div>
-        <button onclick="window.location.href='/logout/'">Logout</button>
+    <div class="button-container">
+        <button class="analysis-button" onclick="window.location.href='http://localhost:8000/analysis/'">Analiza</button>
+        <button class="demo-button" onclick="window.location.href='http://localhost:8000/country/'">Kraje</button>
+        <button class="logout-button" onclick="window.location.href='/logout/'">Wyloguj</button>
     </div>
+    
+    
 </body>
+
 </html>

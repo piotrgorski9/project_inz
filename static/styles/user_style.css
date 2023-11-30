@@ -1,0 +1,79 @@
+body {
+    font-family: 'Arial', sans-serif;
+    color: #000000;
+    background-color: #C0DEBC;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.welcome-message {
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    /* Rodzina czcionek */
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+img.avatar {
+    width: 10%;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 1em;
+    
+    /* Dodaj więcej stylów według potrzeb */
+}
+
+.button-container button {
+    width: 12em;
+    height: 3em;
+    padding: 0em;
+    color: white;
+    
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    transition: background-color 0.3s ease;
+    
+    font-weight: bold; /* Dodana właściwość do pogrubienia tekstu */
+}
+
+/* Pozostała część kodu pozostaje bez zmian */
+
+
+.button-container button.analysis-button {
+    background-color: #4CAF50;
+    /* Kolor dla Przejdź do analizy */
+}
+
+.button-container button.demo-button {
+    background-color: #4CAF50;
+    /* Kolor dla Demo */
+}
+
+.button-container button.logout-button {
+    background-color: #e74c3c;
+    /* Inny kolor dla Wyloguj */
+    margin-top: 1em;
+    /* Dodatkowy margines dla przycisku Wyloguj */
+}
+
+.button-container button:hover {
+    background-color: #45a049;
+}
+
+.button-container button.logout-button:hover {
+    background-color: #d32f2f;
+}

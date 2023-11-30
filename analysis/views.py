@@ -126,11 +126,13 @@ def calculate_standard_deviation_for_country(request):
 
         # Sprawdź, czy początkowy rok nie jest większy niż końcowy rok
         if start_year and end_year and start_year == end_year:
-            return JsonResponse({'error': 'Start year cannot be the same as end year.'}, status=400)
+            return JsonResponse({'error': 'Rok początkowy nie może być taki sam jak rok końcowy.'}, status=400)
+
 
         # Sprawdź, czy początkowy rok jest mniejszy od końcowego roku
         if start_year and end_year and int(start_year) > int(end_year):
-            return JsonResponse({'error': 'Start year must be less than end year.'}, status=400)
+            return JsonResponse({'error': 'Rok początkowy musi być mniejszy niż rok końcowy.'}, status=400)
+
 
         try:
             emigration_data = Emigration.objects.filter(country__country=selected_country, year__range=(start_year, end_year))
@@ -184,18 +186,21 @@ def generate_pie_chart(request, selected_year):
     grouped_countries.append('Inne')
 
     # Tworzenie wykresu kołowego
-    plt.figure(figsize=(8, 8))
+    plt.figure(figsize=(7, 7), dpi=100)
+
     set3_colors = list(plt.cm.Set3.colors)
     colors = set3_colors + ['coral', 'khaki', 'lightgreen', 'lightblue', 'orchid', 'lightcoral', 'palegoldenrod', 'palegreen', 'skyblue', 'thistle']
 
     plt.pie(grouped_emigrants, labels=grouped_countries, autopct='%1.1f%%', startangle=100, colors=colors)
-    plt.title(f'Emigrants distribution for year {selected_year}')
+    plt.title(f'Rozkład emigrantów dla roku {selected_year}')
+
 
     # Przygotowanie etykiet dla legendy
     legend_labels = [f"{grouped_countries[i]}: {grouped_emigrants[i]}" for i in range(len(grouped_countries))]
 
     # Dodanie legendy
-    plt.legend(legend_labels, title='Countries', loc='center left', bbox_to_anchor=(-0.4, 0.5), prop={'size': 7})
+    plt.legend(legend_labels, title='Kraje', loc='center left', bbox_to_anchor=(-0.4, 0.5), prop={'size': 7})
+
 
     image_stream = BytesIO()
     plt.savefig(image_stream, format='png', bbox_inches='tight', pad_inches=0)
@@ -240,10 +245,10 @@ def generate_emigration_chart(request, selected_country):
 
         # Stwórz wykres liniowy
         plt.figure(figsize=(10, 6))
-        plt.plot(years, emigrants, marker='o', linestyle='-', color='blue')
-        plt.title(f'Emigration trend for {selected_country}')
-        plt.xlabel('Year')
-        plt.ylabel('Number of Emigrants')
+        plt.plot(years, emigrants, marker='o', linestyle='-', color='#006400')
+        plt.title(f'Trend emigracji dla kraju {selected_country}')
+        plt.xlabel('Rok')
+        plt.ylabel('Liczba emigrantów')
         plt.xticks(np.arange(min(years), max(years) + 1, 1))  # Ustaw oś X co roku
         plt.grid(True)
 
@@ -292,11 +297,11 @@ def generate_emigration_chart_for_two_countries(request):
 
         # Stwórz wykres liniowy
         plt.figure(figsize=(10, 6))
-        plt.plot(years_country1, emigrants_country1, marker='o', linestyle='-', color='red', label=country1)
-        plt.plot(years_country2, emigrants_country2, marker='o', linestyle='-', color='blue', label=country2)
-        plt.title(f'Emigration trend for {country1} and {country2}')
-        plt.xlabel('Year')
-        plt.ylabel('Number of Emigrants')
+        plt.plot(years_country1, emigrants_country1, marker='o', linestyle='-', color='#006400', label=country1)
+        plt.plot(years_country2, emigrants_country2, marker='o', linestyle='-', color='#FF4500', label=country2)
+        plt.title(f'Trend emigracji dla krajów {country1} i {country2}')
+        plt.xlabel('Rok')
+        plt.ylabel('Liczba emigrantów')
         plt.xticks(np.arange(min(min(years_country1), min(years_country2)), max(max(years_country1), max(years_country2)) + 1, 1))
         plt.legend()
         plt.grid(True)
