@@ -1,33 +1,15 @@
-/* Ogólne style */
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     color: #000000;
-    /* Zmiana koloru tekstu na ciemnoszary (lub dowolny inny kolor) */
     margin: 0;
-    /* Usunięcie domyślnego marginesu dla body */
     padding: 0;
-    /* Usunięcie domyślnego paddingu dla body */
     background-color: #C0DEBC;
-    /* Ustaw kolor tła, na przykład jasnoszary */
-    /* Możesz również użyć obrazu jako tła: background-image: url('sciezka/do/tla.jpg'); */
-    /* Dostosuj pozostałe właściwości tła według potrzeb, na przykład: background-repeat, background-size */
-}
-
-
-h1 {
-    color: #333;
-    /* Zmień kolor nagłówka */
-}
-
-/* Style dla przycisków */
-button {
-    padding: 10px 15px;
-    margin: 5px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
 }
 
 button:hover {
@@ -62,54 +44,20 @@ input {
     box-sizing: border-box;
 }
 
-/* Style dla wyników */
-p {
-    font-weight: bold;
-}
-
-#sumResult,
-#country-year-percentage-details {
-    margin-top: 10px;
-}
-
-/* Style dla ukrytych elementów */
-.hidden {
-    display: none;
-}
-
-/* Styl dla kontenera wykresu kołowego */
-#pieChartContainer {
-    margin-top: 20px;
-}
-
-/* Styl dla kontenera wykresu emigracji */
-#emigrationChartContainer {
-    margin-top: 20px;
-}
-
-/* Styl dla przycisku "Go back" */
-button[type="button"][onclick="goBack"] {
-    background-color: #f44336;
-}
-
-
-
 /* Styl dla przycisku "Show data" */
 .show-data-button {
     padding: 1em 1.5em;
     margin: 1em;
     margin-right: 1em;
     margin-bottom: 1em;
-    /* Dodano margines między przyciskami */
     cursor: pointer;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 0.5em;
     position: absolute;
-    /* Możesz dostosować wartość top, aby ustawić pozycję przycisku na stronie */
     right: 1em;
-    /* Możesz dostosować wartość right, aby ustawić pozycję przycisku na stronie */
+    font-weight: bold;
 }
 
 .show-data-button:hover {
@@ -126,9 +74,8 @@ button[type="button"][onclick="goBack"] {
     border: none;
     border-radius: 0.5em;
     position: absolute;
-    /* Możesz dostosować wartość top, aby ustawić pozycję przycisku na stronie */
     right: 10em;
-    /* Przesunięcie względem poprzedniego przycisku */
+    font-weight: bold;
 }
 
 .show-emigrations-button:hover {
@@ -138,32 +85,23 @@ button[type="button"][onclick="goBack"] {
 /* Styl dla tabeli o klasie "country-table" */
 .country-table {
     width: 80em;
-    /* Ustawia tabelę na pełną szerokość dostępną w kontenerze */
     margin-top: 5em;
-    /* Dodaje odstęp u góry tabeli */
+    margin-bottom: 1em;
     border-collapse: collapse;
-    /* Łączy granice komórek tabeli, aby uzyskać jednolite obramowanie */
     margin-left: auto;
-    /* Ustawia tabelę na środku w poziomie */
     margin-right: auto;
-    /* Ustawia tabelę na środku w poziomie */
 }
 
 .country-table th,
 .country-table td {
     border: 0.1em solid #ddd;
-    /* Dodaje jednostkową granicę komórką */
     padding: 0.8em;
-    /* Dodaje wewnętrzny odstęp dla treści komórek */
     text-align: left;
-    /* Wyrównuje tekst do lewej strony w komórkach */
 }
 
 .country-table th {
     background-color: #4CAF50;
-    /* Kolor tła dla nagłówków kolumn */
     color: white;
-    /* Kolor tekstu dla nagłówków kolumn */
 }
 
 .country-table tbody tr:nth-child(even) {
@@ -176,35 +114,25 @@ button[type="button"][onclick="goBack"] {
     /* Kolor tła dla nieparzystych wierszy */
 }
 
-/* Styl dla tabeli o klasie "emigration-table" */
 .emigration-table {
-    width: 80em;
-    /* Ustawia tabelę na pełną szerokość dostępną w kontenerze */
+    width: 60em;
     margin-top: 5em;
-    /* Dodaje odstęp u góry tabeli */
+    margin-bottom: 1em;
     border-collapse: collapse;
-    /* Łączy granice komórek tabeli, aby uzyskać jednolite obramowanie */
     margin-left: auto;
-    /* Ustawia tabelę na środku w poziomie */
     margin-right: auto;
-    /* Ustawia tabelę na środku w poziomie */
 }
 
 .emigration-table th,
 .emigration-table td {
     border: 0.1em solid #ddd;
-    /* Dodaje jednostkową granicę komórką */
     padding: 0.8em;
-    /* Dodaje wewnętrzny odstęp dla treści komórek */
     text-align: left;
-    /* Wyrównuje tekst do lewej strony w komórkach */
 }
 
 .emigration-table th {
     background-color: #4CAF50;
-    /* Kolor tła dla nagłówków kolumn */
     color: white;
-    /* Kolor tekstu dla nagłówków kolumn */
 }
 
 .emigration-table tbody tr:nth-child(even) {
@@ -228,8 +156,7 @@ button[type="button"][onclick="goBack"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 70em;
-    /* Ustaw maksymalną szerokość według własnych preferencji */
+    max-width: 75em;
     margin-left: auto;
     margin-right: auto;
 }
@@ -249,7 +176,7 @@ button[type="button"][onclick="goBack"] {
 
 .emigration-form label {
     display: block;
-    margin-bottom: 0.3125em;
+    margin-bottom: 0.5em;
     font-weight: bold;
 }
 
@@ -263,17 +190,17 @@ button[type="button"][onclick="goBack"] {
 /* Przyciski */
 .emigration-form button {
     width: 12em;
-    /* Szerokość w jednostkach em */
     height: 3em;
-    /* Wysokość w jednostkach em */
-    padding: 0em;
+    padding: 0.5em;
     background-color: #4CAF50;
     color: white;
     border: none;
     border-radius: 0.5em;
     cursor: pointer;
     margin-bottom: 0.5em;
+    margin-left: 0.7em;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 /* Efekt hover */
@@ -302,28 +229,23 @@ button[type="button"][onclick="goBack"] {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 70em;
-    /* Ustaw maksymalną szerokość według własnych preferencji */
+    max-width: 75em;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* Styl dla wiersza formularza */
-.form-row {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-}
-
-/* Styl dla grupy elementów formularza */
-.form-group {
-    flex: 1;
-    margin-right: 1em;
-}
-
-/* Styl dla przycisku */
 .standard-deviation-form button {
-    margin-top: 1em;
+    width: 13em;
+    height: 3em;
+    padding: 0em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 /* Style dla kontenera wyników */
@@ -337,26 +259,24 @@ button[type="button"][onclick="goBack"] {
     display: flex;
     flex-direction: column;
     align-items: left;
-    max-width: 70em;
-    /* Ustaw maksymalną szerokość według własnych preferencji */
+    max-width: 75em;
     margin-left: auto;
     margin-right: auto;
 }
 
 .results-container h3 {
     text-align: center;
+    margin-bottom: 1em;
 }
 
 /* Style dla wyników */
 .result {
-    margin-bottom: 0.1em;
+    margin-bottom: 0.5em;
     padding: 0.1em;
     border-radius: 0.25em;
-    font-weight: bold;
-    /* Ustawienie normalnej grubości tekstu */
+    font-weight: normal;
 }
 
-/* Dodatkowy styl dla wyników, które mają być ukryte na początku */
 .hidden {
     display: none;
 }
@@ -367,25 +287,20 @@ button[type="button"][onclick="goBack"] {
     top: 1em;
     left: 1em;
     text-align: center;
-    margin-bottom: 10em;
-    /* Dodatkowy odstęp od następnego elementu */
 }
 
 .back-to-panel button {
-    padding: 0.5em 1em;
-    /* Dodaj padding do przycisku */
+    padding: 0em;
     font-size: 1em;
-    /* Ustaw rozmiar czcionki */
     background-color: #4CAF50;
-    /* Kolor tła */
     color: #fff;
-    /* Kolor tekstu */
     border: none;
-    /* Usuń obramowanie */
-    border-radius: 0.25em;
-    /* Zaokrąglij rogi */
+    border-radius: 0.5em;
     cursor: pointer;
-    /* Zmień kursor na wskaźnik */
+    width: 6em;
+    height: 2.3em;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .back-to-panel button:hover {
@@ -395,7 +310,7 @@ button[type="button"][onclick="goBack"] {
 /* kontener z wykresami  */
 .chart-container {
     margin-top: 2em;
-    max-width: 70em;
+    max-width: 75em;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 1em;
@@ -419,12 +334,14 @@ button[type="button"][onclick="goBack"] {
     height: 3em;
     padding: 0em;
     background-color: #4CAF50;
-    color: white;
+    color: #fff;
     border: none;
     border-radius: 0.5em;
     cursor: pointer;
     margin-bottom: 0.5em;
+    margin-left: 1em;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .chart-buttons button:hover {
@@ -469,6 +386,13 @@ button[type="button"][onclick="goBack"] {
     max-width: 50em;
     margin: 0em auto;
     padding: 1em;
+    margin-top: -1em;
+}
+
+#pieChartContainer img {
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
 }
 
 #yearRange {
@@ -481,7 +405,6 @@ button[type="button"][onclick="goBack"] {
     margin: 0 5px;
 }
 
-/* Stylizacja dla selektorów */
 .countries-selectors {
     display: flex;
     flex-wrap: wrap;
@@ -506,10 +429,8 @@ select {
     font-size: 1em;
 }
 
-/* Stylizacja dla przycisku "Two Countries" */
 .two-countries-button-container {
     text-align: center;
-    margin-top: 10px;
 }
 
 .two-countries-button {
@@ -520,6 +441,7 @@ select {
     border: none;
     border-radius: 0.25em;
     cursor: pointer;
+    margin-top: 1em;
 }
 
 .two-countries-button:hover {
@@ -531,16 +453,21 @@ select {
 }
 
 #emigrationChart {
-    max-width: 50em;
+    max-width: 100%;
     height: auto;
     margin: 0 auto;
-    /* Centrowanie wykresu */
 }
 
-#pieChartContainer {
+#pieChart {
+    max-width: 100%;
     height: auto;
     margin: 0 auto;
-    /* Centrowanie wykresu */
-    text-align: center;
-    /* Centrowanie elementów wewnątrz kontenera */
+    display: block;
+}
+
+#pieChart img {
+    max-width: 100%;
+    height: auto;
+    margin: 0 auto;
+    display: block;
 }

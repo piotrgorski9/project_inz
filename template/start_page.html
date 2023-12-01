@@ -2,100 +2,39 @@
 <!DOCTYPE html>
 
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            margin: 0;
-        }
-
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        div {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        h2 {
-            color: #333;
-            font-size: 1.5em;
-            margin-bottom: 10px;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            margin: 10px;
-            font-size: 1.2em;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0066cc;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/start_style.css' %}">
+    <title>Strona główna</title>
 </head>
+
 <body>
-    <img src="{% static 'logo.png' %}" alt="Logo" width="200">
 
-    
-    <h1>Welcome to the Travel Analysis App</h1>
-
-    <button onclick="window.location.href='http://localhost:8000/login/'">Log In</button>
-    <button onclick="window.location.href='http://localhost:8000/signup/'">Sign Up</button>
-    <button onclick="window.location.href='#'">Explore Analysis</button>
-    <button onclick="window.location.href='https://www.google.pl/?hl=pl'">Demo</button>
-
-    <!-- Nowa sekcja -->
-    <div>
-        <h2>Additional Information</h2>
-        <ul>
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Service</a></li>
-        </ul>
+    <div class="header-section">
+        <img src="{% static 'logo.png' %}" alt="Logo" width="200">
+        <h1>Travel Analysis App</h1>
     </div>
+
+    <div class="button-container">
+        <button onclick="window.location.href='http://localhost:8000/login/'">Zaloguj się</button>
+        <button onclick="window.location.href='http://localhost:8000/signup/'">Zarejestruj się</button>
+        <button onclick="window.location.href='#'">Próbna analiza</button>
+        <button onclick="window.location.href='http://localhost:8000/country/'">Kraje</button>
+    </div>
+
+    <div class="additional-info-container">
+        <div>
+            <h2>Dodatkowe informacje</h2>
+        </div>
+        <div class="info-links">
+            <p><a href="#">O nas</a></p>
+            <p><a href="#">Polityka prywatności</a></p>
+            <p><a href="#">Warunki korzystania</a></p>
+        </div>
+    </div>
+
 </body>
+
 </html>

@@ -13,13 +13,12 @@
 <body>
     <img src="{% static 'avatar_log.jpg' %}" alt="Avatar" class="avatar">
     <h1 class="welcome-message">Witaj, {{ user_info.first_name }}!</h1>
-    <!-- Nowa sekcja -->
+    
     <div class="button-container">
         <button class="analysis-button" onclick="window.location.href='http://localhost:8000/analysis/'">Analiza</button>
         <button class="demo-button" onclick="window.location.href='http://localhost:8000/country/'">Kraje</button>
         <button class="logout-button" onclick="window.location.href='/logout/'">Wyloguj</button>
     </div>
-    
     
 </body>
 

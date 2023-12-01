@@ -1,10 +1,14 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
 body {
     font-family: 'Arial', sans-serif;
     background-color: #C0DEBC;
     margin: 1.25em;
-    /* Zmienione z 20px na 1.25em */
     padding: 1.25em;
-    /* Zmienione z 20px na 1.25em */
 }
 
 h2 {
@@ -13,23 +17,19 @@ h2 {
 
 form {
     margin-bottom: 1.25em;
-    /* Zmienione z 20px na 1.25em */
 }
 
 label {
     font-weight: bold;
     margin-right: 0.625em;
-    /* Zmienione z 10px na 0.625em */
 }
 
 select {
     padding: 0.3125em;
-    /* Zmienione z 5px na 0.3125em */
 }
 
 button {
     padding: 0.5em;
-    /* Zmienione z 8px na 0.5em */
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -43,24 +43,16 @@ button {
     left: 1em;
     text-align: center;
     margin-bottom: 10em;
-    /* Dodatkowy odstęp od następnego elementu */
 }
 
 .back-to-panel button {
     padding: 0.5em 1em;
-    /* Dodaj padding do przycisku */
     font-size: 1em;
-    /* Ustaw rozmiar czcionki */
     background-color: #4CAF50;
-    /* Kolor tła */
     color: #fff;
-    /* Kolor tekstu */
     border: none;
-    /* Usuń obramowanie */
     border-radius: 0.25em;
-    /* Zaokrąglij rogi */
     cursor: pointer;
-    /* Zmień kursor na wskaźnik */
 }
 
 .back-to-panel button:hover {
@@ -68,20 +60,14 @@ button {
 }
 
 .country-selection {
-    background-color: #ffffff;
-    width: 20em;
-    padding: 1.25em;
-    /* Zmienione z 20px na 1.25em */
+    background-color: #ffffff88;
+    width: 22em;
+    padding: 2em;
     border-radius: 0.5em;
-    /* Zmienione z 8px na 0.5em */
     box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
-    /* Zmienione z 0 4px 8px rgba(0, 0, 0, 0.1) na 0 0.25em 0.5em rgba(0, 0, 0, 0.1) */
     margin: 0 auto;
-    /* Dodane, aby ustawić na środku */
     margin-top: 1.25em;
-    /* Zmienione z 20px na 1.25em */
     margin-bottom: 1.25em;
-    /* Zmienione z 20px na 1.25em */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -93,46 +79,38 @@ button {
 
 .country-selection form {
     margin-top: 0.9375em;
-    /* Zmienione z 15px na 0.9375em */
 }
 
 .country-selection label {
     font-weight: bold;
     margin-right: 0.625em;
-    /* Zmienione z 10px na 0.625em */
 }
 
 .country-selection select {
     padding: 0.5em;
-    /* Zmienione z 8px na 0.5em */
     border-radius: 0.25em;
-    /* Zmienione z 4px na 0.25em */
 }
 
 .country-selection button {
     padding: 0.625em;
-    /* Zmienione z 10px na 0.625em */
     background-color: #4CAF50;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 0.25em;
-    /* Zmienione z 4px na 0.25em */
 }
 
 .country-selection button:hover {
     background-color: #45a049;
 }
 
-
 #country-info {
     display: none;
-    width: 20em;
-    /* Ukryj kontener na początku */
+    width: 22em;
     margin: 0 auto;
     margin-top: 0em;
-    background-color: #ffffff;
-    padding: 1.25em;
+    background-color: #ffffff88;
+    padding: 2em;
     border-radius: 0.5em;
     box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
     margin-bottom: 1.25em;
@@ -142,18 +120,14 @@ button {
 #country-info h3 {
     color: #333;
     font-size: 3em;
-    /* Zwiększenie rozmiaru czcionki */
     margin-top: 0em;
     margin-bottom: 0em;
-    /* Dodatkowy odstęp od elementów poniżej */
 }
 
 #country-info p {
     margin: 0.3125em 0;
     font-size: 1em;
     text-align: left;
-    /* Dodane ustawienie dla paragrafów */
-    /* Rozmiar czcionki dla paragrafów */
 }
 
 #country-info strong {
@@ -165,5 +139,4 @@ button {
     max-height: 9.375em;
     margin-top: 0.625em;
     margin-bottom: 1em;
-    ;
 }

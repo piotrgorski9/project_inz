@@ -1,128 +1,38 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-
-        h1 {
-            color: #333;
-            font-size: 2em;
-            margin-bottom: 20px;
-        }
-
-        form {
-            border: 3px solid #f1f1f1;
-            background-color: white;
-            padding: 20px;
-            width: 50%;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .avatar-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        img.avatar {
-            width: 20%;
-            border-radius: 50%;
-        }
-
-        label {
-            font-size: 18px;
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        input[type=email], input[type=password] {
-            width: 100%;
-            font-size: 15px;
-            margin: 8px 0px;
-            padding: 12px 20px;
-            display: inline-block;
-            border: 2px solid #3498db;
-            box-sizing: border-box;
-            border-radius: 5px;
-        }
-
-        input[type=hidden] {
-            display: none; /* Ukryj pole */
-        }
-
-        button {
-            background-color: #4caf50;
-            width: 100%;
-            padding: 15px;
-            color: white;
-            border: none;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
-        .container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        a {
-            text-decoration: none;
-            color: #0066cc;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/login_style.css' %}">
+    <title>Strona logowania</title>
 </head>
+
 <body>
-    <h1>Login Form</h1>
-    <form action="#" method="post">
+    <!-- <h1>Login Form</h1> -->
+    <form action="#" method="post" class="login-form">
         {% csrf_token %}
         <div class="avatar-container">
             <img src="{% static 'avatar_log.jpg' %}" alt="Avatar" class="avatar">
         </div>
-        <label for="email"><b>User Email:</b></label>
-        <input type="email" placeholder="Enter email" name="email" required>
-        <label for="password"><b>Password:</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
-
+        <!-- <label for="email"><b>Email użytkownika:</b></label> -->
+        <input type="email" placeholder="Adres e-mail" name="email" required>
+        <!-- <label for="password"><b>Hasło:</b></label> -->
+        <input type="password" placeholder="Hasło" name="password" required>
         <!-- Dodaj ukryte pole user_type -->
         <input type="hidden" name="user_type" value="normal">
-
-        <button type="submit">Login</button>
-        <p>Don't have an account? <a href="http://localhost:8000/signup/">Register</a></p>
-        <p>Back to <a href="http://localhost:8000">Main Page</a></p>
+        <button type="submit">Zaloguj</button>
+        <p>Nie masz konta? <a href="http://localhost:8000/signup/">Zarejestruj się</a></p>
+        <p>Wróć do <a href="http://localhost:8000">Strona główna</a></p>
     </form>
 
     {% if error_message %}
     <p style="color: red;">{{ error_message }}</p>
     {% if email %}
-        <p>Invalid login attempt for email: {{ email }}</p>
+    <!-- <p>Invalid login attempt for email: {{ email }}</p> -->
     {% endif %}
-{% endif %}
+    {% endif %}
 </body>
+
 </html>

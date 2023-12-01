@@ -203,7 +203,7 @@ def generate_pie_chart(request, selected_year):
 
 
     image_stream = BytesIO()
-    plt.savefig(image_stream, format='png', bbox_inches='tight', pad_inches=0)
+    plt.savefig(image_stream, format='png', dpi=90, bbox_inches='tight', pad_inches=0)
     image_stream.seek(0)
 
     image_base64 = base64.b64encode(image_stream.read()).decode('utf-8')

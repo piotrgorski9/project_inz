@@ -17,17 +17,21 @@ body {
     height: 100vh;
 }
 
-.welcome-message {
-    color: #333;
-    font-family: 'Arial', sans-serif;
-    font-size: 2em;
-    margin-bottom: 20px;
+.header-section {
+    text-align: center;
+    margin-bottom: 1em;
 }
 
-img.avatar {
-    width: 10%;
-    border-radius: 50%;
-    margin-bottom: 3em;
+.header-section img {
+    max-width: 100%;
+    height: auto;
+    margin: 0;
+}
+
+.header-section h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 1em;
 }
 
 .button-container {
@@ -43,6 +47,7 @@ img.avatar {
     height: 3em;
     padding: 0em;
     color: white;
+    background-color: #4CAF50;
     border: none;
     border-radius: 0.5em;
     cursor: pointer;
@@ -51,23 +56,37 @@ img.avatar {
     font-weight: bold;
 }
 
-.button-container button.analysis-button {
-    background-color: #4CAF50;
-}
-
-.button-container button.demo-button {
-    background-color: #4CAF50;
-}
-
-.button-container button.logout-button {
-    background-color: #e74c3c;
-    margin-top: 1em;
-}
-
 .button-container button:hover {
     background-color: #45a049;
 }
 
-.button-container button.logout-button:hover {
-    background-color: #d32f2f;
+.additional-info-container {
+    text-align: center;
+    margin-top: 2em;
+}
+
+.additional-info-container h2 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.info-links {
+    display: flex;
+    justify-content: space-around;
+}
+
+.info-links p {
+    margin-top: 1em;
+    margin-left: 1em;
+    font-size: 1em;
+}
+
+.info-links a {
+    text-decoration: none;
+    color: #0066cc;
+}
+
+.info-links a:hover {
+    text-decoration: underline;
 }

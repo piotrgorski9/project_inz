@@ -1,4 +1,3 @@
-<!-- analysis.html -->
 {% load static %}
 <!DOCTYPE html>
 <html>
@@ -48,33 +47,27 @@
             <div class="form-group">
                 <!-- Przycisk do pokazania średniej emigracji dla wybranego roku -->
                 <button type="button" onclick="calculateAverageForSelectedYear()">Średnia emigracja</button>
-
             </div>
             <div class="form-group">
                 <!-- Przycisk do pokazania minimalnej emigracji dla wybranego roku -->
                 <button type="button" onclick="calculateMinForSelectedYear()">Minimalna emigracja</button>
-
             </div>
             <div class="form-group">
                 <!-- Przycisk do pokazania maksymalnej emigracji dla wybranego roku -->
                 <button type="button" onclick="calculateMaxEmigrationForYear()">Maksymalna emigracja</button>
-
             </div>
             <div class="form-group">
                 <!-- Przycisk do pokazywania sumy emigrantów dla wybranego roku -->
                 <button type="button" onclick="calculateSum()">Suma emigracji</button>
-
             </div>
             <div class="form-group">
                 <!-- Przycisk do pokazania procentu emigrantów dla wybranego kraju -->
                 <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Procent
                     emigracji</button>
-
             </div>
             <div class="form-group">
                 <!-- Ukrywanie wyników -->
                 <button type="button" class="highlighted" onclick="hideAllResults()">Ukryj wyniki</button>
-
             </div>
         </div>
     </form>
@@ -84,14 +77,12 @@
         <div class="form-row">
             <div class="form-group">
                 <label for="selected-country-deviation">Wybierz kraj:</label>
-
                 <select id="selected-country-deviation" name="selected-country-deviation">
                     {% for country in countries %}
                     <option value="{{ country.country }}">{{ country.country }}</option>
                     {% endfor %}
                 </select>
             </div>
-
             <!-- Pola do wyboru zakresu lat -->
             <div class="form-group">
                 <label for="start-year">Rok początkowy:</label>
@@ -101,7 +92,6 @@
                     {% endfor %}
                 </select>
             </div>
-
             <div class="form-group">
                 <label for="end-year">Rok końcowy:</label>
 
@@ -112,70 +102,53 @@
                 </select>
             </div>
         </div>
-
         <!-- Przycisk do obliczania odchylenia standardowego dla danego kraju -->
         <button type="button" onclick="calculateStandardDeviationForSelectedCountry()">Odchylenie standardowe</button>
 
     </form>
-
     <!-- Kontener na wyniki -->
     <div id="results-container" class="results-container">
-
         <h3>Wyniki twoich obliczeń obliczeń</h3> <!-- Dodany nagłówek -->
         <!-- Wyświetlenie wyniku obliczonej średniej -->
         <p id="averageResult" class="result" style="display: none;"></p>
-
         <!-- Wyświetlenie wyniku minimalnej emigracji dla wybranego roku -->
         <p id="minResult" class="result" style="display: none;"></p>
-
         <!-- Wyświetlenie wyniku maksymalnej emigracji dla wybranego roku -->
         <p id="maxEmigrationResult" class="result" style="display: none;"></p>
-
         <!-- Wyświetlanie sumy emigrantów dla wybranego roku -->
-        <div id="sumResult" class="result" style="display: none;"></div>
-
+        <p id="sumResult" class="result" style="display: none;"></p>
         <!-- Wyświetlenie wyniku obliczonego procentu dla wybranego kraju i roku -->
         <p id="country-year-percentage-result" class="result" style="display: none;"></p>
-
         <!-- Wyświetlenie wyniku odchylenia standardowego dla wybranego kraju i zakresu lat -->
         <p id="standardDeviationResult" class="result" style="display: none;"></p>
     </div>
-
     <!-- Przyciski do wykresów -->
-
     <div class="chart-container">
         <div class="chart-buttons">
             <button type="button" onclick="showPieChart()">Wykres kołowy</button>
-
             <button type="button" onclick="showEmigrationChart()">Wykres emigracji</button>
-
-            <button id="hidePieChartButton" onclick="hidePieChart()">Ukryj wykresy</button>
-
+            <button id="hidePieChartButton" onclick="hidePieChart()">Ukryj wykres</button>
         </div>
-
         <div class="chart-content">
-            <div id="pieChartContainer"></div>
-
+            <div id="pieChartContainer">
+                <div id="pieChart"></div>
+            </div>
             <form id="emigration-form" style="display: none;">
                 <div id="emigrationChartContainer">
                     <img id="emigrationChart" src="" alt="Emigration Chart">
                 </div>
-
                 <!-- div dla selektorów -->
                 <div class="countries-selectors">
                     <div class="selector-group">
                         <label for="selected-country-1">Wybierz kraj 1:</label>
-
                         <select id="selected-country-1" name="selected-country-1">
                             {% for country in countries %}
                             <option value="{{ country.country }}">{{ country.country }}</option>
                             {% endfor %}
                         </select>
                     </div>
-
                     <div class="selector-group">
                         <label for="selected-country-2">Wybierz kraj 2:</label>
-
                         <select id="selected-country-2" name="selected-country-2">
                             {% for country in countries %}
                             <option value="{{ country.country }}">{{ country.country }}</option>
@@ -183,37 +156,27 @@
                         </select>
                     </div>
                 </div>
-
                 <!-- div dla opisu lat -->
                 <div class="year-description">
                     Wybierz lata od
                     <span id="selectedStartYear">2005</span>
                     do
                     <span id="selectedEndYear">2022</span>
-
                 </div>
-
                 <div id="yearRange"></div>
-
                 <!-- div dla przycisku "Two Countries" -->
                 <div class="two-countries-button-container">
                     <button class="two-countries-button" type="button"
                         onclick="showEmigrationChartForTwoCountries()">Porównaj</button>
-
                 </div>
             </form>
         </div>
     </div>
-
     <!-- Przycisk do pokazania/ukrycia danych krajów -->
     <button type="button" class="show-data-button" onclick="toggleTable('country-table')">Pokaż dane</button>
-
-
     <!-- Przycisk do pokazania/ukrycia danych o emigracjach -->
     <button type="button" class="show-emigrations-button" onclick="toggleTable('emigration-table')">Pokaż
         emigracje</button>
-
-
     <!-- Tabela z danymi krajów -->
     <table id="country-table" class="country-table">
         <thead>
@@ -393,8 +356,8 @@
 
             // Ukryj wyniki sumy emigrantów przed wysłaniem zapytania AJAX
             var sumResult = document.getElementById('sumResult');
-            sumResult.style.display = 'none';
-            sumResult.innerText = '';  // Zresetuj tekst wyniku
+            // sumResult.style.display = 'none';
+            // sumResult.innerText = '';  // Zresetuj tekst wyniku
 
             // Wywołaj funkcję na backendzie i obsłuż odpowiedź
             $.get('/calculate_sum_for_year/', { selected_year: selectedYear }, function (data) {
@@ -473,7 +436,6 @@
                 });
         }
 
-
         // Funkcja do pokazania wykresu emigracji
         function showEmigrationChart() {
             document.getElementById('emigration-form').classList.add('active');
@@ -505,7 +467,6 @@
                     console.error('Error during AJAX request:', error);
                 });
         }
-
 
         // Funkcja do obsługi suwaka z dwoma uchwytami
         function handleYearRangeChange() {
