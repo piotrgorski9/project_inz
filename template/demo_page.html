@@ -1,0 +1,240 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Strona Analizy</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/analysis_style.css' %}">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+
+<body>
+    <center>
+        <h1>To jest tylko przykładowa analiza</h1>
+        <h2>Aby uzyskać więcej analizy</h2>
+        <h2>Zaloguj się!</h2>
+    </center>
+
+    <!-- Powrót do panelu użytkownika -->
+    <div class="back-to-panel">
+        <button type="button" onclick="goBack()">Powrót</button>
+    </div>
+
+    <!-- Formularz do obliczania średniej i minimalnej emigracji dla wybranego roku -->
+    <form id="analysis-form" class="emigration-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label for="selected-year">Wybierz rok:</label>
+                <select id="selected-year" name="selected-year">
+                    {% for year in unique_years %}
+                    <option value="{{ year.year }}">{{ year.year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="selected-country">Wybierz kraj:</label>
+                <select id="selected-country" name="selected-country">
+                    {% for country in countries %}
+                    <option value="{{ country.country }}">{{ country.country }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <!-- Przyciski -->
+        <div class="form-row">
+            <div class="form-group">
+                <!-- Przycisk do pokazania średniej emigracji dla wybranego roku -->
+                <button type="button" onclick="calculateAverageForSelectedYear()">Średnia emigracja</button>
+            </div>
+            <div class="form-group">
+                <!-- Przycisk do pokazania minimalnej emigracji dla wybranego roku -->
+                <button type="button" onclick="calculateMinForSelectedYear()">Minimalna emigracja</button>
+            </div>
+            <div class="form-group">
+                <!-- Przycisk do pokazania maksymalnej emigracji dla wybranego roku -->
+                <button type="button" onclick="calculateMaxEmigrationForYear()">Maksymalna emigracja</button>
+            </div>
+            <div class="form-group">
+                <!-- Przycisk do pokazywania sumy emigrantów dla wybranego roku -->
+                <button type="button" onclick="calculateSum()">Suma emigracji</button>
+            </div>
+            <div class="form-group">
+                <!-- Przycisk do pokazania procentu emigrantów dla wybranego kraju -->
+                <button type="button" onclick="calculatePercentageForSelectedCountryAndYear()">Procent
+                    emigracji</button>
+            </div>
+            <div class="form-group">
+                <!-- Ukrywanie wyników -->
+                <button type="button" class="highlighted" onclick="hideAllResults()">Ukryj wyniki</button>
+            </div>
+        </div>
+    </form>
+
+    </form>
+    <!-- Kontener na wyniki -->
+    <div id="results-container" class="results-container">
+        <h3>Wyniki twoich obliczeń obliczeń</h3> <!-- Dodany nagłówek -->
+        <!-- Wyświetlenie wyniku obliczonej średniej -->
+        <p id="averageResult" class="result" style="display: none;"></p>
+        <!-- Wyświetlenie wyniku minimalnej emigracji dla wybranego roku -->
+        <p id="minResult" class="result" style="display: none;"></p>
+        <!-- Wyświetlenie wyniku maksymalnej emigracji dla wybranego roku -->
+        <p id="maxEmigrationResult" class="result" style="display: none;"></p>
+        <!-- Wyświetlanie sumy emigrantów dla wybranego roku -->
+        <p id="sumResult" class="result" style="display: none;"></p>
+        <!-- Wyświetlenie wyniku obliczonego procentu dla wybranego kraju i roku -->
+        <p id="country-year-percentage-result" class="result" style="display: none;"></p>
+    </div>
+
+    <script>
+        // Wyswietlanie tabel
+        function toggleTable(tableId) {
+            var table = document.getElementById(tableId);
+            table.style.display = (table.style.display === 'none') ? 'table' : 'none';
+        }
+
+        // Obliczanie sredniej dla wybranego roku
+        function calculateAverageForSelectedYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć średnią dla wybranego roku
+            fetch('/calculate_average_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('average_emigration' in data) {
+                        var averageResult = document.getElementById('averageResult');
+                        averageResult.innerHTML = "Średnia emigracja dla roku " + selectedYear + ": " + data.average_emigration.toFixed(2);
+
+                        averageResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Obliczanie procentu dla wybranego kraju
+        function calculatePercentageForSelectedCountryAndYear() {
+            var selectedCountry = document.getElementById('selected-country').value;
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć procent dla wybranego kraju i roku
+            fetch('/calculate_percentage_for_country_and_year/?selected_country=' + encodeURIComponent(selectedCountry) + '&selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('percentage' in data) {
+                        var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
+                        countryYearPercentageResult.innerHTML = "Procent emigrantów dla kraju " + selectedCountry + " w roku " + selectedYear + ": " + data.percentage.toFixed(2) + "%";
+                        countryYearPercentageResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Max wartośc dla wybranego roku
+        function calculateMaxEmigrationForYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć maksymalną emigrację dla wybranego roku
+            fetch('/calculate_max_emigration_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('max_emigration' in data && 'max_country' in data) {
+                        var maxEmigrationResult = document.getElementById('maxEmigrationResult');
+                        maxEmigrationResult.innerHTML = "Maksymalna emigracja dla roku " + selectedYear + ": " + data.max_emigration +
+                            " w kraju " + data.max_country;
+
+                        maxEmigrationResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        // Min wartośc dla wybranego roku
+        function calculateMinForSelectedYear() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Wywołaj żądanie AJAX do Django, aby obliczyć minimalną wartość dla wybranego roku
+            fetch('/calculate_min_for_year/?selected_year=' + encodeURIComponent(selectedYear))
+                .then(response => response.json())
+                .then(data => {
+                    if ('min_emigration' in data && 'country_with_min_emigration' in data) {
+                        var minResult = document.getElementById('minResult');
+
+                        minResult.innerHTML = "Minimalna emigracja dla roku " + selectedYear + ": " + data.min_emigration +
+                            " w kraju " + data.country_with_min_emigration;
+
+                        minResult.style.display = 'block';
+                    } else {
+                        alert('An error occurred: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during AJAX request:', error);
+                });
+        }
+
+        function calculateSum() {
+            var selectedYear = document.getElementById('selected-year').value;
+
+            // Ukryj wyniki sumy emigrantów przed wysłaniem zapytania AJAX
+            var sumResult = document.getElementById('sumResult');
+
+            // Wywołaj funkcję na backendzie i obsłuż odpowiedź
+            $.get('/calculate_sum_for_year/', { selected_year: selectedYear }, function (data) {
+                if ('total_emigration_for_year' in data) {
+                    $('#sumResult').text('Suma emigrantów w roku ' + selectedYear + ': ' + data.total_emigration_for_year);
+                    // Pokaż wyniki sumy emigrantów po otrzymaniu odpowiedzi
+                    sumResult.style.display = 'block';
+                } else {
+                    $('#sumResult').text('Błąd: ' + data.error);
+                }
+            });
+        }
+
+        // powrót do strony glownej
+        function goBack() {
+            window.history.back();
+        }
+
+        // Funkcja do ukrywania wszystkich wyników
+        function hideAllResults() {
+            // Ukryj wyniki średniej emigracji
+            var averageResult = document.getElementById('averageResult');
+            averageResult.style.display = 'none';
+
+            // Ukryj wyniki minimalnej emigracji
+            var minResult = document.getElementById('minResult');
+            minResult.style.display = 'none';
+
+            // Ukryj wyniki maksymalnej emigracji
+            var maxEmigrationResult = document.getElementById('maxEmigrationResult');
+            maxEmigrationResult.style.display = 'none';
+
+            // Ukryj wyniki sumy emigrantów
+            var sumResult = document.getElementById('sumResult');
+            sumResult.style.display = 'none';
+
+            // Ukryj wyniki procentu dla wybranego kraju i roku
+            var countryYearPercentageResult = document.getElementById('country-year-percentage-result');
+            countryYearPercentageResult.style.display = 'none';
+        }
+
+    </script>
+</body>
+
+</html>

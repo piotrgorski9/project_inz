@@ -7,20 +7,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{% static 'styles/start_style.css' %}">
+    <link rel="icon" href="{% static 'logo/logo.png' %}" type="image/png">
     <title>Strona główna</title>
 </head>
 
 <body>
 
     <div class="header-section">
-        <img src="{% static 'logo.png' %}" alt="Logo" width="200">
+        <img src="{% static 'logo/logo.png' %}" alt="Logo" width="200">
         <h1>Travel Analysis App</h1>
     </div>
 
     <div class="button-container">
         <button onclick="window.location.href='http://localhost:8000/login/'">Zaloguj się</button>
         <button onclick="window.location.href='http://localhost:8000/signup/'">Zarejestruj się</button>
-        <button onclick="window.location.href='#'">Próbna analiza</button>
+        <button onclick="window.location.href='http://localhost:8000/demo/'">Próbna analiza</button>
         <button onclick="window.location.href='http://localhost:8000/country/'">Kraje</button>
     </div>
 
