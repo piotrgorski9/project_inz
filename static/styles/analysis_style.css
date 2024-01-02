@@ -484,3 +484,123 @@ select {
     margin: 0 auto;
     display: block;
 }
+
+/* Styl dla formularza współczynnika korelacji Pearsona */
+.correlation-form {
+    margin-top: 2em;
+    max-width: 75em;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1em;
+    padding: 1em;
+    border: 1px solid #ccc;
+    border-radius: 0.5em;
+    box-shadow: 0 0 1em rgba(0, 0, 0, 0.1);
+    background-color: #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+/* Styl dla grupy pól formularza (lewa strona) */
+.left-group {
+    flex: 1;
+    box-sizing: border-box;
+    margin-bottom: 1em;
+}
+
+/* Styl dla pola wyboru krajów */
+.form-group select#selected_countries {
+    width: 100%;
+    /* Dostosuj szerokość do 100% kontenera */
+    height: 85%;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    box-sizing: border-box;
+}
+
+/* Styl dla grupy pól formularza (prawa strona) */
+.right-group {
+    flex: 1;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    /* Ustawia elementy w kolumnie (jeden pod drugim) */
+    margin-bottom: 1em;
+}
+
+.right-group div {
+    margin-bottom: 1em;
+    /* Dodatkowy margines między elementami w grupie prawej */
+}
+
+/* Styl dla grupy przycisków */
+.button-group {
+    width: 100%;
+    margin-top: 0em;
+    padding: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+}
+
+/* Pozostałe style niezmienione */
+.form-group label {
+    display: block;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    box-sizing: border-box;
+}
+
+/* Styl dla przycisków obliczeń */
+.calculate-button {
+    width: 12em;
+    /* Zmniejsz szerokość przycisków do 12em */
+    height: 3em;
+    padding: 0.5em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.calculate-button:hover {
+    background-color: #45a049;
+}
+
+/* Styl dla kontenera wykresów */
+/* Styl dla kontenera wykresów */
+.charts-container {
+    display: none;
+    width: 100%;
+    margin-top: 1em;
+    justify-content: center;
+}
+
+/* Styl dla wykresu */
+#correlationChart {
+    width: 100%;
+    max-width: 60em;
+    /* Dostosuj szerokość maksymalną do preferencji */
+    height: 40em;
+    /* Dodaj stałą wysokość */
+    margin-top: 1em;
+    /* Dodaj margines na górę */
+    margin-left: auto;
+    /* Ustaw wykres na środku */
+    margin-right: auto;
+    /* Ustaw wykres na środku */
+}

@@ -21,7 +21,7 @@ from login.views import loginaction
 from start.views import startaction
 from logout.views import logoutaction
 from user_panel.views import userpanelaction
-from analysis.views import analysisaction, calculate_average_for_selected_year, calculate_percentage_for_selected_country_and_year, calculate_max_emigration_for_year, calculate_min_for_year, calculate_standard_deviation_for_year, generate_pie_chart, generate_emigration_chart, calculate_standard_deviation_for_country, generate_emigration_chart_for_two_countries, calculate_sum_for_year
+from analysis.views import analysisaction, calculate_average_for_selected_year, calculate_percentage_for_selected_country_and_year, calculate_max_emigration_for_year, calculate_min_for_year, calculate_standard_deviation_for_year, generate_pie_chart, generate_emigration_chart, calculate_standard_deviation_for_country, generate_emigration_chart_for_two_countries, calculate_sum_for_year, calculate_correlation, calculate_spearman_correlation
 from admin_page.views import admin_page
 from country.views import country_view
 from demo.views import demoaction
@@ -46,6 +46,8 @@ urlpatterns = [
     path('calculate_standard_deviation_for_country/', calculate_standard_deviation_for_country, name='calculate_standard_deviation_for_country'),
     path('generate_emigration_chart_for_two_countries/', generate_emigration_chart_for_two_countries, name='generate_emigration_chart_for_two_countries'),
     path('calculate_sum_for_year/', calculate_sum_for_year, name='calculate_sum_for_year'),
+    path('calculate_correlation/', calculate_correlation, name='calculate_correlation'),
+    path('calculate_spearman_correlation/', calculate_spearman_correlation, name='calculate_spearman_correlation'),
     path('admin_page/', admin_page, name='admin_page'),
     path('country/', country_view, name='country'),
     path('demo/', demoaction, name='demo'),

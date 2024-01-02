@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/jquery-3.6.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -172,6 +173,70 @@
             </form>
         </div>
     </div>
+    <!-- ______________________________________________________________________________________________________ -->
+
+
+    <!-- Formularz dla współczynnika korelacji Pearsona -->
+    <!-- Formularz dla współczynnika korelacji Pearsona -->
+    <form id="correlationForm" class="correlation-form">
+        <div class="form-group left-group">
+            <label for="selected_countries">Wybierz kraje:</label>
+            <select id="selected_countries" multiple class="form-control">
+                {% for country in countries %}
+                <option value="{{ country.country }}">{{ country.country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group right-group">
+            <div>
+                <label for="start_year">Rok początkowy:</label>
+                <select id="start_year" class="form-control">
+                    {% for year in unique_years %}
+                    <option value="{{ year.year }}">{{ year.year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>
+                <label for="end_year">Rok końcowy:</label>
+                <select id="end_year" class="form-control">
+                    {% for year in unique_years %}
+                    <option value="{{ year.year }}">{{ year.year }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" class="calculate-button" onclick="calculateCorrelation()">Pearson</button>
+            <button type="button" class="calculate-button" onclick="calculateSpearmanCorrelation()">Spearman</button>
+        </div>
+
+        <!-- Dodane miejsce na wykresy z klasą 'charts-container' -->
+        <div class="charts-container">
+            <canvas id="correlationChart" width="100" height="50"></canvas>
+        </div>
+    </form>
+
+
+
+
+
+
+
+    <!-- Dodaj miejsce na wyniki korelacji -->
+    <!-- <div id="correlationResults"></div> -->
+
+    <!-- Dodaj miejsce na wykresy, jeśli są potrzebne -->
+    <!-- <div id="charts">
+        <canvas id="correlationChart" width="100" height="50"></canvas>
+    </div> -->
+
+    <!-- ______________________________________________________________________________________________________ -->
+
+
+    <!-- ______________________________________________________________________________________________________ -->
     <!-- Przycisk do pokazania/ukrycia danych krajów -->
     <button type="button" class="show-data-button" onclick="toggleTable('country-table')">Pokaż dane</button>
     <!-- Przycisk do pokazania/ukrycia danych o emigracjach -->
@@ -541,6 +606,199 @@
             document.getElementById('pieChartContainer').classList.remove('active');
             document.getElementById('emigration-form').classList.remove('active');
         }
+
+
+        var selectedCountries;
+        var scatterChart;
+
+        function calculateCorrelation() {
+            selectedCountries = $('#selected_countries').val();
+            var startYear = $('#start_year').val();
+            var endYear = $('#end_year').val();
+
+            if (!selectedCountries || selectedCountries.length < 2) {
+                alert('Proszę wybrać co najmniej dwa kraje przed obliczeniem korelacji.');
+                return;
+            }
+
+            if (parseInt(startYear) >= parseInt(endYear)) {
+                alert('Rok początkowy musi być mniejszy niż rok końcowy.');
+                return;
+            }
+
+            var requestData = {
+                'selected_countries': selectedCountries,
+                'start_year': startYear,
+                'end_year': endYear,
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/calculate_correlation/',
+                data: JSON.stringify(requestData),
+                contentType: 'application/json;charset=utf-8',
+                success: function (response) {
+                    console.log('Response from server:', response);
+                    displayCorrelationResults(response.correlation_results, 'Pearsona');  // Poprawiona wartość drugiego argumentu
+                },
+                error: function (error) {
+                    console.error('Error calculating correlation:', error);
+                }
+            });
+        }
+
+        function displayCorrelationResults(correlationResults, correlationType) {
+            $('#correlationResults').empty();
+
+            for (const [country, correlationCoefficient] of Object.entries(correlationResults)) {
+                var roundedCoefficient = correlationCoefficient.toFixed(2);
+                var resultHtml = `<p>Współczynnik korelacji ${correlationType} dla kraju ${country}: ${roundedCoefficient}</p>`;
+                $('#correlationResults').append(resultHtml);
+            }
+
+            if (scatterChart) {
+                scatterChart.destroy();
+            }
+
+            // Pokaż kontener wykresów
+            $('.charts-container').show();
+
+            // Generuj wykres
+            generateScatterPlot(correlationResults, correlationType);
+        }
+
+        function generateScatterPlot(correlationResults, correlationType) {
+            var countries = Object.keys(correlationResults);
+            var coefficients = Object.values(correlationResults);
+
+            var data = {
+                labels: countries,
+                datasets: [{
+                    label: `Współczynnik korelacji ${correlationType}`,
+                    data: coefficients,
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                }]
+            };
+
+            if (correlationType === 'Pearsona') {
+                // Obliczenia dla regresji liniowej (Pearson)
+                var regressionCoefficients = linearRegression(countries.map((_, index) => index), coefficients);
+                var regressionLineData = countries.map((_, index) => ({
+                    x: index,
+                    y: regressionCoefficients.slope * index + regressionCoefficients.intercept
+                }));
+
+                // Dodanie danych dla linii regresji (Pearsona)
+                data.datasets.push({
+                    label: 'Linia regresji',
+                    data: regressionLineData,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    fill: false,
+                });
+            } else if (correlationType === 'Spearmana') {
+                // Obliczenia dla linii trendu (Spearman)
+                var rankX = countries.map((_, index) => index);
+                var rankY = coefficients.slice().sort((a, b) => a - b);
+
+                var spearmanRegressionCoefficients = linearRegression(rankX, rankY);
+                var spearmanRegressionLineData = rankX.map((_, index) => ({
+                    x: index,
+                    y: spearmanRegressionCoefficients.slope * index + spearmanRegressionCoefficients.intercept
+                }));
+
+                // Dodanie danych dla linii trendu (Spearmana)
+                data.datasets.push({
+                    label: 'Linia trendu',
+                    data: spearmanRegressionLineData,
+                    type: 'line',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    pointHoverRadius: 0,
+                    fill: false,
+                });
+            }
+
+            // Konfiguracja opcji wykresu punktowego
+            var options = {
+                scales: {
+                    x: {
+                        type: 'category',
+                        labels: countries,
+                        beginAtZero: true,
+                    },
+                    y: {
+                        beginAtZero: true,
+                        suggestedMax: 1,
+                    }
+                }
+            };
+
+            // Wygeneruj wykres punktowy
+            var ctx = document.getElementById('correlationChart').getContext('2d');
+            scatterChart = new Chart(ctx, {
+                type: 'scatter',
+                data: data,
+                options: options
+            });
+        }
+
+        function linearRegression(x, y) {
+            var n = x.length;
+            var sumX = x.reduce((acc, val) => acc + val, 0);
+            var sumY = y.reduce((acc, val) => acc + val, 0);
+            var sumXY = x.map((val, index) => val * y[index]).reduce((acc, val) => acc + val, 0);
+            var sumX2 = x.map(val => val ** 2).reduce((acc, val) => acc + val, 0);
+
+            var slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX ** 2);
+            var intercept = (sumY - slope * sumX) / n;
+
+            return { slope, intercept };
+        }
+
+        function calculateSpearmanCorrelation() {
+            var selectedCountries = document.getElementById('selected_countries').selectedOptions;
+            var startYear = document.getElementById('start_year').value;
+            var endYear = document.getElementById('end_year').value;
+
+            if (selectedCountries.length < 2) {
+                alert('Wybierz co najmniej dwa kraje do obliczenia korelacji rang Spearmana.');
+                return;
+            }
+
+            var requestData = {
+                selected_countries: Array.from(selectedCountries, option => option.value),
+                start_year: startYear,
+                end_year: endYear
+            };
+
+            fetch('/calculate_spearman_correlation/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    var spearmanResults = data.spearman_results;
+                    displayCorrelationResults(spearmanResults, 'Spearmana');
+                })
+                .catch(error => {
+                    console.error('Błąd podczas obliczania korelacji rang Spearmana:', error);
+                    alert('Wystąpił błąd podczas obliczania korelacji rang Spearmana.');
+                });
+        }
+
+
 
     </script>
 </body>

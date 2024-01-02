@@ -11,6 +11,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from io import BytesIO
 import base64
+import json
+from django.views.decorators.csrf import csrf_exempt
+import scipy.stats
+
 
 def analysisaction(request):
     countries = Country.objects.all()
@@ -160,6 +164,78 @@ def calculate_sum_for_year(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
     
+@csrf_exempt
+def calculate_correlation(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        selected_countries = data.get('selected_countries')
+        start_year = int(data.get('start_year'))
+        end_year = int(data.get('end_year'))
+
+        correlation_results = {}
+
+        for selected_country in selected_countries:
+            try:
+                # Spróbuj uzyskać obiekt kraju na podstawie nazwy
+                country_object = Country.objects.get(country=selected_country)
+
+                # Pobierz dane emigracyjne dla wybranego kraju i zakresu lat
+                emigration_data = Emigration.objects.filter(
+                    country=country_object,
+                    year__range=(start_year, end_year)
+                )
+
+                # Przygotuj listy lat i liczby emigrantów
+                years = [emigration.year for emigration in emigration_data]
+                emigrants = [emigration.number_of_emigrants for emigration in emigration_data]
+
+                # Oblicz współczynnik korelacji Pearsona
+                correlation_coefficient = np.corrcoef(years, emigrants)[0, 1]
+
+                correlation_results[selected_country] = correlation_coefficient
+
+            except Country.DoesNotExist:
+                correlation_results[selected_country] = f'Country {selected_country} not found'
+
+        return JsonResponse({'correlation_results': correlation_results})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
+
+@csrf_exempt
+def calculate_spearman_correlation(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        selected_countries = data.get('selected_countries')
+        start_year = int(data.get('start_year'))
+        end_year = int(data.get('end_year'))
+
+        spearman_results = {}
+
+        for selected_country in selected_countries:
+            try:
+                # Spróbuj uzyskać obiekt kraju na podstawie nazwy
+                country_object = Country.objects.get(country=selected_country)
+
+                # Pobierz dane emigracyjne dla wybranego kraju i zakresu lat
+                emigration_data = Emigration.objects.filter(
+                    country=country_object,
+                    year__range=(start_year, end_year)
+                )
+
+                # Przygotuj listy lat i liczby emigrantów
+                years = [emigration.year for emigration in emigration_data]
+                emigrants = [emigration.number_of_emigrants for emigration in emigration_data]
+
+                # Oblicz współczynnik rang Spearmana
+                spearman_results[selected_country] = scipy.stats.spearmanr(years, emigrants).correlation
+
+            except Country.DoesNotExist:
+                spearman_results[selected_country] = f'Country {selected_country} not found'
+
+        return JsonResponse({'spearman_results': spearman_results})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
+
 # wykres kołowy
 def generate_pie_chart(request, selected_year):
     emigration_data = get_emigration_data_for_year(selected_year)
