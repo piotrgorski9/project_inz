@@ -1,0 +1,78 @@
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    color: #000000;
+    background-color: #C0DEBC;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+h1 {
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.welcome-header {
+    color: #333;
+    font-family: 'Arial', sans-serif;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.menu-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-top: 1em;
+    
+}
+
+.menu-container button {
+    width: 12em;
+    height: 3em;
+    padding: 0em;
+    color: white;
+    border: none;
+    border-radius: 0.5em;
+    cursor: pointer;
+    margin-bottom: 0.5em;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+}
+
+.logout-button {
+    background-color: #e74c3c;
+    margin-top: 1em;
+}
+
+.logout-button:hover {
+    background-color: #d32f2f;
+}
+
+.admin-button {
+    background-color: #4CAF50;
+}
+
+.admin-button:hover {
+    background-color: #45a049;
+}
+
+img.avatar {
+    width: 10%;
+    border-radius: 50%;
+    margin-bottom: 3em;
+}
+
