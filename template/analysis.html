@@ -109,7 +109,7 @@
     </form>
     <!-- Kontener na wyniki -->
     <div id="results-container" class="results-container">
-        <h3>Wyniki twoich obliczeń obliczeń</h3> <!-- Dodany nagłówek -->
+        <h3>Wyniki twoich obliczeń</h3> <!-- Dodany nagłówek -->
         <!-- Wyświetlenie wyniku obliczonej średniej -->
         <p id="averageResult" class="result" style="display: none;"></p>
         <!-- Wyświetlenie wyniku minimalnej emigracji dla wybranego roku -->
@@ -219,24 +219,6 @@
         </div>
     </form>
 
-
-
-
-
-
-
-    <!-- Dodaj miejsce na wyniki korelacji -->
-    <!-- <div id="correlationResults"></div> -->
-
-    <!-- Dodaj miejsce na wykresy, jeśli są potrzebne -->
-    <!-- <div id="charts">
-        <canvas id="correlationChart" width="100" height="50"></canvas>
-    </div> -->
-
-    <!-- ______________________________________________________________________________________________________ -->
-
-
-    <!-- ______________________________________________________________________________________________________ -->
     <!-- Przycisk do pokazania/ukrycia danych krajów -->
     <button type="button" class="show-data-button" onclick="toggleTable('country-table')">Pokaż dane</button>
     <!-- Przycisk do pokazania/ukrycia danych o emigracjach -->
@@ -616,8 +598,8 @@
             var startYear = $('#start_year').val();
             var endYear = $('#end_year').val();
 
-            if (!selectedCountries || selectedCountries.length < 2) {
-                alert('Proszę wybrać co najmniej dwa kraje przed obliczeniem korelacji.');
+            if (!selectedCountries || selectedCountries.length < 1) {
+                alert('Proszę wybrać co najmniej jeden kraj przed obliczeniem korelacji.');
                 return;
             }
 
@@ -668,88 +650,44 @@
         }
 
         function generateScatterPlot(correlationResults, correlationType) {
-            var countries = Object.keys(correlationResults);
-            var coefficients = Object.values(correlationResults);
+    var countries = Object.keys(correlationResults);
+    var coefficients = Object.values(correlationResults);
 
-            var data = {
+    var data = {
+        labels: countries,
+        datasets: [{
+            label: `Współczynnik korelacji ${correlationType}`,
+            data: coefficients,
+            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+        }]
+    };
+
+    // Konfiguracja opcji wykresu słupkowego
+    var options = {
+        scales: {
+            x: {
+                type: 'category',
                 labels: countries,
-                datasets: [{
-                    label: `Współczynnik korelacji ${correlationType}`,
-                    data: coefficients,
-                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    pointRadius: 5,
-                    pointHoverRadius: 8,
-                }]
-            };
-
-            if (correlationType === 'Pearsona') {
-                // Obliczenia dla regresji liniowej (Pearson)
-                var regressionCoefficients = linearRegression(countries.map((_, index) => index), coefficients);
-                var regressionLineData = countries.map((_, index) => ({
-                    x: index,
-                    y: regressionCoefficients.slope * index + regressionCoefficients.intercept
-                }));
-
-                // Dodanie danych dla linii regresji (Pearsona)
-                data.datasets.push({
-                    label: 'Linia regresji',
-                    data: regressionLineData,
-                    type: 'line',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                    fill: false,
-                });
-            } else if (correlationType === 'Spearmana') {
-                // Obliczenia dla linii trendu (Spearman)
-                var rankX = countries.map((_, index) => index);
-                var rankY = coefficients.slice().sort((a, b) => a - b);
-
-                var spearmanRegressionCoefficients = linearRegression(rankX, rankY);
-                var spearmanRegressionLineData = rankX.map((_, index) => ({
-                    x: index,
-                    y: spearmanRegressionCoefficients.slope * index + spearmanRegressionCoefficients.intercept
-                }));
-
-                // Dodanie danych dla linii trendu (Spearmana)
-                data.datasets.push({
-                    label: 'Linia trendu',
-                    data: spearmanRegressionLineData,
-                    type: 'line',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 0,
-                    fill: false,
-                });
+                beginAtZero: true,
+            },
+            y: {
+                beginAtZero: true,
+                suggestedMax: 1,
             }
-
-            // Konfiguracja opcji wykresu punktowego
-            var options = {
-                scales: {
-                    x: {
-                        type: 'category',
-                        labels: countries,
-                        beginAtZero: true,
-                    },
-                    y: {
-                        beginAtZero: true,
-                        suggestedMax: 1,
-                    }
-                }
-            };
-
-            // Wygeneruj wykres punktowy
-            var ctx = document.getElementById('correlationChart').getContext('2d');
-            scatterChart = new Chart(ctx, {
-                type: 'scatter',
-                data: data,
-                options: options
-            });
         }
+    };
+
+    // Wygeneruj wykres słupkowy
+    var ctx = document.getElementById('correlationChart').getContext('2d');
+    scatterChart = new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: options
+    });
+}
+
 
         function linearRegression(x, y) {
             var n = x.length;
@@ -769,8 +707,8 @@
             var startYear = document.getElementById('start_year').value;
             var endYear = document.getElementById('end_year').value;
 
-            if (selectedCountries.length < 2) {
-                alert('Wybierz co najmniej dwa kraje do obliczenia korelacji rang Spearmana.');
+            if (selectedCountries.length < 1) {
+                alert('Wybierz co najmniej jeden kraj do obliczenia korelacji rang Spearmana.');
                 return;
             }
 
@@ -797,9 +735,6 @@
                     alert('Wystąpił błąd podczas obliczania korelacji rang Spearmana.');
                 });
         }
-
-
-
     </script>
 </body>
 

@@ -35,7 +35,7 @@ def signaction(request):
             user_profile.save()
 
             # Przekazanie komunikatu o sukcesie do szablonu
-            return render(request, 'signup_page.html', {'success_message': 'Registration successful!'})
+            return render(request, 'signup_page.html', {'success_message': 'Rejestracja udana!'})
 
         except Exception as e:
             print(f"Błąd podczas rejestracji: {e}")
