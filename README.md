@@ -1,5 +1,3 @@
-Here's an edited version of your README description to improve its structure and readability for GitHub:
-
 ---
 
 # Web Application for Polish Emigration Analysis
@@ -21,5 +19,3 @@ Another key feature for all users is the ability to browse basic information abo
 In summary, the application was designed to facilitate the analysis of Polish emigration trends in an accessible, fast, and enjoyable manner. By consolidating all necessary features in one place, users can easily conduct comprehensive analyses, making the application both efficient and user-friendly for everyone.
 
 ---
-
-This version enhances clarity and readability while maintaining all the key points. Let me know if you'd like any further adjustments!
